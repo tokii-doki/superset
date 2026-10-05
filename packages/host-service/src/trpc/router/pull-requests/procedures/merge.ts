@@ -11,6 +11,7 @@ import {
 	resolveGithubRepo,
 	resolveGitLabRepo,
 } from "../../workspace-creation/shared/project-helpers";
+import { syncPullRequestAfterWrite } from "../shared/sync-after-write";
 
 const mergeInputSchema = z.object({
 	projectId: z.string(),
@@ -78,6 +79,7 @@ export const mergePR = protectedProcedure
 		}
 		const repo = await resolveGithubRepo(ctx, input.projectId);
 		const octokit = await ctx.github();
+		let merged: Awaited<ReturnType<typeof octokit.pulls.merge>>["data"];
 		try {
 			const { data } = await octokit.pulls.merge({
 				owner: repo.owner,
@@ -86,8 +88,14 @@ export const mergePR = protectedProcedure
 				merge_method: input.mergeMethod,
 				...(input.commitMessage ? { commit_message: input.commitMessage } : {}),
 			});
-			return data;
+			merged = data;
 		} catch (error) {
 			throw actionRejectionError(error, "GitHub refused the merge.");
 		}
+		await syncPullRequestAfterWrite(ctx, {
+			repo,
+			prNumber: input.prNumber,
+			action: "merge",
+		});
+		return merged;
 	});

@@ -13,11 +13,6 @@ interface PullRequestPaneHeaderExtrasProps {
 	data: PullRequestPaneData;
 }
 
-/**
- * Copy the PR's link, and jump to the full Pull requests screen where the
- * Code tab and the PR list live. That screen is project-scoped, so the jump
- * exists only when this workspace has a project.
- */
 export function PullRequestPaneHeaderExtras({
 	data,
 }: PullRequestPaneHeaderExtrasProps) {
@@ -26,8 +21,12 @@ export function PullRequestPaneHeaderExtras({
 	const { workspace } = useWorkspace();
 	const { copyToClipboard, copied } = useCopyToClipboard();
 	const detail = usePullRequestPaneDetail(data);
-	const url = detail.data?.url;
-	const projectId = workspace.projectId;
+	const url =
+		detail.data?.url ??
+		(data.provider === "gitlab"
+			? `${data.instance}/${data.repoPath ?? data.repoFullName}/-/merge_requests/${data.number}`
+			: `https://github.com/${data.repoFullName}/pull/${data.number}`);
+	const projectId = detail.projectId;
 	const copyLabel = copied
 		? t({ message: "Copied" })
 		: data.provider === "gitlab"
@@ -36,62 +35,60 @@ export function PullRequestPaneHeaderExtras({
 
 	return (
 		<>
-			{url && (
-				<Tooltip>
-					<TooltipTrigger asChild>
-						<button
-							type="button"
-							onClick={() => {
-								void copyToClipboard(url).catch(() => {
-									toast.error(t({ message: "Failed to copy to clipboard" }));
-								});
-							}}
-							aria-label={copyLabel}
-							className="rounded p-1 text-muted-foreground/60 transition-colors hover:text-muted-foreground"
-						>
-							{copied ? (
-								<LuCheck className="size-3.5" />
-							) : (
-								<LuCopy className="size-3.5" />
-							)}
-						</button>
-					</TooltipTrigger>
-					<TooltipContent side="bottom">{copyLabel}</TooltipContent>
-				</Tooltip>
-			)}
-			{projectId && (
-				<Tooltip>
-					<TooltipTrigger asChild>
-						<button
-							type="button"
-							onClick={() => {
-								// Same pair the PR list's own row click performs — the detail
-								// pane may have been collapsed the last time the view was open.
-								usePullRequestsSplitViewStore.getState().expandDetail();
-								void navigate({
-									to: "/pull-requests/$prNumber",
-									params: { prNumber: String(data.number) },
-									search: {
-										project: projectId,
-										provider: data.provider === "gitlab" ? "gitlab" : undefined,
-										instance: data.instance,
-										repoPath: data.repoPath,
-									},
-								});
-							}}
-							aria-label={t({
-								message: "Open in Pull Requests",
-							})}
-							className="rounded p-1 text-muted-foreground/60 transition-colors hover:text-muted-foreground"
-						>
-							<LuMaximize2 className="size-3.5" />
-						</button>
-					</TooltipTrigger>
-					<TooltipContent side="bottom">
-						<Trans>Open in Pull Requests</Trans>
-					</TooltipContent>
-				</Tooltip>
-			)}
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<button
+						type="button"
+						onClick={() => {
+							void copyToClipboard(url).catch(() => {
+								toast.error(t({ message: "Failed to copy to clipboard" }));
+							});
+						}}
+						aria-label={copyLabel}
+						className="rounded p-1 text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+					>
+						{copied ? (
+							<LuCheck className="size-3.5" />
+						) : (
+							<LuCopy className="size-3.5" />
+						)}
+					</button>
+				</TooltipTrigger>
+				<TooltipContent side="bottom">{copyLabel}</TooltipContent>
+			</Tooltip>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<button
+						type="button"
+						onClick={() => {
+							// Same pair the PR list's own row click performs — the detail
+							// pane may have been collapsed the last time the view was open.
+							usePullRequestsSplitViewStore.getState().expandDetail();
+							void navigate({
+								to: "/pull-requests/$prNumber",
+								params: { prNumber: String(data.number) },
+								search: {
+									project: projectId ?? undefined,
+									repo: data.repoFullName,
+									host: workspace.hostId,
+									provider: data.provider === "gitlab" ? "gitlab" : undefined,
+									instance: data.instance,
+									repoPath: data.repoPath,
+								},
+							});
+						}}
+						aria-label={t({
+							message: "Open in Pull Requests",
+						})}
+						className="rounded p-1 text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+					>
+						<LuMaximize2 className="size-3.5" />
+					</button>
+				</TooltipTrigger>
+				<TooltipContent side="bottom">
+					<Trans>Open in Pull Requests</Trans>
+				</TooltipContent>
+			</Tooltip>
 		</>
 	);
 }

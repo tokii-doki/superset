@@ -10,6 +10,7 @@ import type {
 import { buildSubmitPrompt } from "./buildSubmitPrompt";
 import {
 	fetchInternalTaskBody,
+	fetchLinearIssueBody,
 	fetchPrBody,
 	fetchRepositoryIssueBody,
 } from "./fetchers";
@@ -101,6 +102,12 @@ export function useNewWorkspacePromptContext(args: {
 				const taskId = issue.taskId;
 				store.register(`task:${taskId}`, () =>
 					fetchInternalTaskBody({ taskId }),
+				);
+			} else if (issue.source === "linear" && activeOrganizationId) {
+				const identifier = issue.slug;
+				const organizationId = activeOrganizationId;
+				store.register(`linear-issue:${identifier}`, () =>
+					fetchLinearIssueBody({ organizationId, identifier }),
 				);
 			}
 		}

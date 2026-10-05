@@ -27,6 +27,7 @@ export type PullRequestsSearch = {
 	search?: string;
 	project?: string;
 	host?: string;
+	repo?: string;
 	projects?: string;
 	author?: string;
 	review?: string;
@@ -42,6 +43,7 @@ export const Route = createFileRoute(
 	component: PullRequestsLayout,
 	validateSearch: (search: Record<string, unknown>): PullRequestsSearch => ({
 		search: typeof search.search === "string" ? search.search : undefined,
+		repo: typeof search.repo === "string" ? search.repo : undefined,
 		project: typeof search.project === "string" ? search.project : undefined,
 		host: typeof search.host === "string" ? search.host : undefined,
 		projects: typeof search.projects === "string" ? search.projects : undefined,
@@ -69,6 +71,7 @@ function PullRequestsLayout() {
 	const {
 		search,
 		project,
+		repo,
 		host,
 		projects,
 		author,
@@ -137,6 +140,7 @@ function PullRequestsLayout() {
 			selectedPrProvider={provider ?? "github"}
 			selectedPrInstance={instance ?? null}
 			selectedPrRepoPath={repoPath ?? null}
+			selectedPrRepo={repo ?? null}
 		/>
 	);
 

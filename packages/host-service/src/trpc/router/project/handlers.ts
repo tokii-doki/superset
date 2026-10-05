@@ -7,12 +7,12 @@ import { restoreProject } from "../../../projects/project-deletion";
 import type { HostServiceContext } from "../../../types";
 import { persistLocalProject } from "./utils/persist-project";
 import {
+	adoptLocalRepo,
 	cloneRepoInto,
 	cloneTemplateInto,
 	initEmptyRepo,
 	initLocalRepoInPlace,
 	type ResolvedRepo,
-	resolveLocalRepo,
 	tryRevParseGitRoot,
 } from "./utils/resolve-repo";
 
@@ -78,12 +78,13 @@ async function persistFromResolved(
 
 export async function createFromClone(
 	ctx: HostServiceContext,
-	args: { name: string; parentDir: string; url: string },
+	args: { name: string; parentDir: string; url: string; signal?: AbortSignal },
 ): Promise<CreateResult> {
 	const resolved = await cloneRepoInto(
 		args.url,
 		args.parentDir,
 		ctx.credentials,
+		args.signal,
 		ctx.gitlab,
 	);
 	return persistFromResolved(ctx, {
@@ -103,9 +104,9 @@ async function resolveOrInitLocalRepo(
 	initIfNeeded: boolean,
 	gitlab: HostServiceContext["gitlab"],
 ): Promise<ResolvedRepo> {
-	if (!initIfNeeded) return resolveLocalRepo(repoPath, gitlab);
+	if (!initIfNeeded) return adoptLocalRepo(repoPath, gitlab);
 	const root = await tryRevParseGitRoot(repoPath);
-	return root ? resolveLocalRepo(root, gitlab) : initLocalRepoInPlace(repoPath);
+	return root ? adoptLocalRepo(root, gitlab) : initLocalRepoInPlace(repoPath);
 }
 
 export async function createFromImportLocal(

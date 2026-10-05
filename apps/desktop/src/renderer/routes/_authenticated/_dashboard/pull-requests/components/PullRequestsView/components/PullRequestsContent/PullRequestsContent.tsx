@@ -4,6 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { GoGitPullRequest } from "react-icons/go";
 import { LuRefreshCw } from "react-icons/lu";
 import { useDebouncedValue } from "renderer/hooks/useDebouncedValue";
+import { pullRequestRefFromUrl } from "renderer/lib/github/pullRequestRef";
 import { getHostServiceClientByUrl } from "renderer/lib/host-service-client";
 import { assertGitLabHostSupport } from "renderer/lib/host-service-gitlab";
 import { LoadMoreSentinel } from "renderer/routes/_authenticated/_dashboard/components/LoadMoreSentinel";
@@ -155,6 +156,7 @@ export function PullRequestsContent({
 				provider: pr.provider === "gitlab" ? "gitlab" : undefined,
 				instance: "instance" in pr ? pr.instance : undefined,
 				repoPath: "repoPath" in pr ? pr.repoPath : undefined,
+				repo: pullRequestRefFromUrl(pr.url)?.repoFullName,
 				projects: serializeProjectFilters(projectFilters),
 				author: authorFilter ?? undefined,
 				review: reviewFilter ?? undefined,

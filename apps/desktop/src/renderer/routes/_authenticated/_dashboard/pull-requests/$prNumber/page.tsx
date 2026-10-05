@@ -1,19 +1,18 @@
-import { useLingui } from "@lingui/react/macro";
-import { cn } from "@superset/ui/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useHostUrl } from "renderer/hooks/host-service/useHostTargetUrl";
 import { PageHeader } from "renderer/routes/_authenticated/_dashboard/components/PageHeader";
-import { WorkItemDetailState } from "renderer/routes/_authenticated/_dashboard/components/WorkItemDetailState";
 import { useProjectHost } from "renderer/routes/_authenticated/_dashboard/hooks/useProjectHost";
+import { PullRequestDetailContent } from "renderer/routes/_authenticated/_dashboard/pull-requests/components/PullRequestDetailContent";
 import { PullRequestDetailHeader } from "renderer/routes/_authenticated/_dashboard/pull-requests/components/PullRequestDetailHeader";
+import {
+	type PullRequestDetailTab,
+	PullRequestDetailTabs,
+} from "renderer/routes/_authenticated/_dashboard/pull-requests/components/PullRequestDetailTabs";
 import { PullRequestListToggle } from "renderer/routes/_authenticated/_dashboard/pull-requests/components/PullRequestListToggle";
-import { PullRequestSummaryContent } from "renderer/routes/_authenticated/_dashboard/pull-requests/components/PullRequestSummaryContent";
 import { usePullRequestDetail } from "renderer/routes/_authenticated/_dashboard/pull-requests/hooks/usePullRequestDetail";
-import { resolvePullRequestDetail } from "renderer/routes/_authenticated/_dashboard/pull-requests/utils/resolvePullRequestDetail";
 import { parsePositiveIntegerParam } from "renderer/routes/_authenticated/_dashboard/utils/parsePositiveIntegerParam";
 import { Route as PullRequestsLayoutRoute } from "../layout";
-import { PullRequestCodeTab } from "./components/PullRequestCodeTab";
 
 export const Route = createFileRoute(
 	"/_authenticated/_dashboard/pull-requests/$prNumber/",
@@ -21,58 +20,31 @@ export const Route = createFileRoute(
 	component: PullRequestDetailPage,
 });
 
-type DetailTab = "summary" | "code";
-
 function PullRequestDetailPage() {
-	const { t } = useLingui();
-	const detailTabs: ReadonlyArray<{ value: DetailTab; label: string }> = [
-		{
-			value: "summary",
-			label: t({
-				message: "Summary",
-			}),
-		},
-		{
-			value: "code",
-			label: t({
-				message: "Code",
-			}),
-		},
-	];
 	const { prNumber: prNumberRaw } = Route.useParams();
 	const prNumber = parsePositiveIntegerParam(prNumberRaw);
 	const search = PullRequestsLayoutRoute.useSearch();
 	const projectId = search.project ?? null;
 	const provider = search.provider ?? "github";
-	const {
-		hostId,
-		hostProject,
-		isReady: areProjectsReady,
-		project,
-	} = useProjectHost(projectId, search.host);
-	const hostUrl = useHostUrl(hostId ?? undefined);
-	const identityProject = search.host ? hostProject : project;
-	const repoPath = [identityProject?.repoOwner, identityProject?.repoName]
-		.filter(Boolean)
-		.join("/");
-	const instance =
-		identityProject?.instance ??
-		(provider === "github" ? "https://github.com" : "");
-	const identityMatches =
-		!!identityProject &&
-		(identityProject.provider ?? "github") === provider &&
-		(!search.instance || search.instance === instance) &&
-		(!search.repoPath || search.repoPath === repoPath);
-	const [activeTab, setActiveTab] = useState<DetailTab>("summary");
+	const { hostId, hostProject, project, isReady } = useProjectHost(
+		projectId,
+		search.host,
+	);
+	const hostUrl = useHostUrl(hostId);
+	const [activeTab, setActiveTab] = useState<PullRequestDetailTab>("summary");
 
-	const { data, isLoading, error, refetch } = usePullRequestDetail({
+	const detail = usePullRequestDetail({
 		projectId,
 		hostUrl,
 		prNumber,
+		repoFullName: search.repo,
 		provider,
-		instance,
-		repoPath,
-		enabled: identityMatches,
+		instance: search.instance,
+		repoPath: search.repoPath,
+		projectQuery:
+			provider === "gitlab"
+				? { data: search.host ? hostProject : project, isPending: !isReady }
+				: undefined,
 	});
 
 	// The list pane is always visible in the split view (or reachable via the
@@ -85,92 +57,39 @@ function PullRequestDetailPage() {
 				start={
 					<>
 						<PullRequestListToggle />
-						<div className="ml-2 flex items-center gap-1">
-							{detailTabs.map(({ value, label }) => (
-								<button
-									key={value}
-									type="button"
-									onClick={() => setActiveTab(value)}
-									aria-current={activeTab === value ? "true" : undefined}
-									className={cn(
-										"rounded-md px-2 py-1 text-xs font-medium transition-colors",
-										activeTab === value
-											? "bg-accent text-foreground"
-											: "text-muted-foreground hover:text-foreground",
-									)}
-								>
-									{label}
-								</button>
-							))}
-						</div>
+						<PullRequestDetailTabs
+							activeTab={activeTab}
+							onTabChange={setActiveTab}
+							className="ml-2"
+						/>
 					</>
 				}
 			/>
 			<PullRequestDetailHeader
-				projectId={projectId}
+				projectId={detail.projectId}
 				hostId={hostId}
 				hostUrl={hostUrl}
 				prNumber={prNumber}
 				requestProvider={provider}
-				data={data}
-				isLoading={isLoading}
+				data={detail.data}
+				isLoading={detail.isLoading}
 			/>
 		</div>
 	);
 
-	const resolved = resolvePullRequestDetail({
-		prNumber,
-		projectId,
-		areProjectsReady,
-		hasProject: !!project,
-		hostUrl,
-		isLoading,
-		identityMatches,
-		error,
-		data,
-		refetch: () => void refetch(),
-	});
-
-	if (resolved.status === "fallback") {
-		return (
-			<div className="flex min-h-0 flex-1 flex-col">
-				{header}
-				<WorkItemDetailState
-					message={resolved.message}
-					isLoading={resolved.isLoading}
-					isError={resolved.isError}
-					onRetry={resolved.onRetry}
-				/>
-			</div>
-		);
-	}
-
 	return (
 		<div className="@container flex min-h-0 flex-1 flex-col">
 			{header}
-			{/* Kept mounted (hidden via CSS, not unmounted) so Radix's
-			 *  ScrollArea instance survives a tab switch and away — swapping
-			 *  it out of a ternary would reset scrollTop every time the
-			 *  reviewer comes back from the Code tab. The Code tab itself
-			 *  still mounts/unmounts with the ternary below: it isn't a
-			 *  simple scroll container (its own virtualized diff viewer
-			 *  manages scrolling internally), and keeping its polling/agent
-			 *  subscriptions alive while hidden isn't worth the tradeoff. */}
-			<div
-				className={cn("min-h-0 flex-1", activeTab !== "summary" && "hidden")}
-			>
-				<PullRequestSummaryContent data={resolved.data} />
-			</div>
-			{activeTab === "code" && (
-				<PullRequestCodeTab
-					projectId={resolved.projectId}
-					prNumber={resolved.data.number}
-					prUrl={resolved.data.url}
-					headSha={resolved.data.headSha}
-					hostUrl={resolved.hostUrl}
-					hostId={hostId}
-				/>
-			)}
+			<PullRequestDetailContent
+				activeTab={activeTab}
+				detail={detail}
+				requestProvider={provider}
+				projectId={detail.projectId}
+				repoFullName={detail.repoFullName}
+				prNumber={prNumber}
+				hostUrl={hostUrl}
+				hostId={hostId}
+			/>
 		</div>
 	);
 }

@@ -177,7 +177,7 @@ function IssueDetailPage() {
 	const stateIconClass = isClosed ? "text-violet-500" : "text-emerald-500";
 	const header = (
 		<WorkItemDetailHeader
-			itemNumber={data?.number ?? issueNumber}
+			itemLabel={`#${data?.number ?? issueNumber ?? "—"}`}
 			icon={<StateIcon className={`size-4 shrink-0 ${stateIconClass}`} />}
 			backLabel={
 				provider === "gitlab"

@@ -7,17 +7,17 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { useActiveOrganizationId } from "renderer/hooks/useActiveOrganizationId";
-import { cloudTrpc } from "renderer/lib/cloud-trpc";
 import { useDebouncedSearchNavigation } from "renderer/routes/_authenticated/_dashboard/hooks/useDebouncedSearchNavigation";
 import { useProjectQueryTargets } from "renderer/routes/_authenticated/_dashboard/hooks/useProjectQueryTargets";
 import {
+	type TypeTab,
 	tasksSearchFromFilters,
 	useTasksFilterStore,
 } from "../../stores/tasks-filter-state";
+import type { LinearIssue } from "../../utils/linearIssueTypes";
 import { BoardContent } from "./components/BoardContent";
 import type { SelectedIssue } from "./components/GitHubIssuesContent";
-import { LinearCTA } from "./components/LinearCTA";
+import { LinearIssuesContent } from "./components/LinearIssuesContent";
 import { RepositoryIssuesContent } from "./components/RepositoryIssuesContent";
 import { TableContent } from "./components/TableContent";
 import {
@@ -31,7 +31,7 @@ interface TasksViewProps {
 	initialTab?: TabValue;
 	initialAssignee?: string;
 	initialSearch?: string;
-	initialType?: TaskSource;
+	initialType?: TypeTab;
 	initialProjects?: string[];
 	initialLinearProject?: string;
 	initialState?: "open" | "all";
@@ -47,7 +47,6 @@ export function TasksView({
 	initialState,
 }: TasksViewProps) {
 	const navigate = useNavigate();
-	const activeOrganizationId = useActiveOrganizationId();
 	const {
 		tab: storedTab,
 		assignee: storedAssignee,
@@ -61,6 +60,10 @@ export function TasksView({
 		setTypeTab: storeSetTypeTab,
 		setProjectFilters: storeSetProjectFilters,
 		setLinearProjectFilter: storeSetLinearProjectFilter,
+		linearTeamFilter,
+		setLinearTeamFilter,
+		linearAssigneeFilter,
+		setLinearAssigneeFilter,
 		includeClosedIssues: storedIncludeClosedIssues,
 		setIncludeClosedIssues: storeSetIncludeClosedIssues,
 		viewMode,
@@ -70,7 +73,7 @@ export function TasksView({
 	const [searchQuery, setSearchQuery] = useState(initialSearch ?? storedSearch);
 	const deferredSearchQuery = useDeferredValue(searchQuery);
 	const assigneeFilter = initialAssignee ?? storedAssignee;
-	const typeTab = initialType ?? storedTypeTab;
+	const typeTab: TypeTab = initialType ?? storedTypeTab;
 	const projectFilters = initialProjects ?? storedProjectFilters;
 	const linearProjectFilter = initialLinearProject ?? storedLinearProjectFilter;
 	const includeClosedIssues =
@@ -90,7 +93,7 @@ export function TasksView({
 			tab?: TabValue;
 			assignee?: string | null;
 			search?: string;
-			type?: TaskSource;
+			type?: TypeTab;
 			projects?: string[];
 			linearProject?: string | null;
 			includeClosedIssues?: boolean;
@@ -176,11 +179,6 @@ export function TasksView({
 		storeSetIncludeClosedIssues(includeClosedIssues);
 	}, [includeClosedIssues, storeSetIncludeClosedIssues]);
 
-	const { data: integrations } = cloudTrpc.integration.list.useQuery(
-		{ organizationId: activeOrganizationId ?? "" },
-		{ enabled: !!activeOrganizationId },
-	);
-
 	// Projects are fully local — identity comes from the host fan-out.
 	const {
 		isReady: areProjectsReady,
@@ -217,9 +215,6 @@ export function TasksView({
 		navigate,
 		buildSearch,
 	]);
-
-	const isLinearConnected =
-		integrations?.some((i) => i.provider === "linear") ?? false;
 
 	// Defaults ("all"/null) are omitted from the URL, so write the store too —
 	// otherwise the render falls back to the stale stored value (no-op select).
@@ -264,16 +259,6 @@ export function TasksView({
 		navigate({
 			to: "/tasks",
 			search: buildSearch({ projects }),
-			replace: true,
-		});
-	};
-
-	const handleLinearProjectFilterChange = (linearProject: string | null) => {
-		cancelPendingSearchNavigation();
-		storeSetLinearProjectFilter(linearProject);
-		navigate({
-			to: "/tasks",
-			search: buildSearch({ linearProject }),
 			replace: true,
 		});
 	};
@@ -326,11 +311,17 @@ export function TasksView({
 		});
 	};
 
-	const showLinearCTA =
-		integrations !== undefined && !isLinearConnected && typeTab === "tasks";
+	const handleLinearIssueOpen = (issue: LinearIssue) => {
+		navigate({
+			to: "/tasks/linear/$issueId",
+			params: { issueId: issue.identifier },
+			search: buildSearch({}),
+		});
+	};
 
 	const showTasks = typeTab === "tasks";
-	const showIssues = typeTab !== "tasks";
+	const showLinear = typeTab === "linear";
+	const showIssues = typeTab === "issues" || typeTab === "gitlab-issues";
 	const taskSource: TaskSource = typeTab;
 	const issueProjectTargets = projectTargets.filter(
 		(target) =>
@@ -357,50 +348,60 @@ export function TasksView({
 				onTaskSourceChange={handleTaskSourceChange}
 				projectFilters={projectFilters}
 				onProjectFiltersChange={handleProjectFiltersChange}
-				linearProjectFilter={linearProjectFilter}
-				onLinearProjectFilterChange={handleLinearProjectFilterChange}
+				linearTeamFilter={linearTeamFilter}
+				onLinearTeamFilterChange={setLinearTeamFilter}
+				linearAssigneeFilter={linearAssigneeFilter}
+				onLinearAssigneeFilterChange={setLinearAssigneeFilter}
 				includeClosedIssues={includeClosedIssues}
 				onIncludeClosedIssuesChange={handleIncludeClosedIssuesChange}
 			/>
 
-			{showLinearCTA ? (
-				<LinearCTA />
-			) : (
-				<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
-					{showTasks &&
-						(viewMode === "board" ? (
-							<BoardContent
-								filterTab={currentTab}
-								searchQuery={deferredSearchQuery}
-								assigneeFilter={assigneeFilter}
-								linearProjectFilter={linearProjectFilter}
-								onTaskClick={handleTaskClick}
-							/>
-						) : (
-							<TableContent
-								filterTab={currentTab}
-								searchQuery={deferredSearchQuery}
-								assigneeFilter={assigneeFilter}
-								linearProjectFilter={linearProjectFilter}
-								onTaskClick={handleTaskClick}
-								onSelectionChange={handleSelectionChange}
-							/>
-						))}
-					{showIssues && (
-						<RepositoryIssuesContent
-							key={taskSource}
-							provider={typeTab === "gitlab-issues" ? "gitlab" : "github"}
-							projectFilters={projectFilters}
-							projectTargets={issueProjectTargets}
-							areProjectsReady={areProjectsReady}
-							hasProjects={v2Projects.length > 0}
-							searchQuery={searchQuery}
-							includeClosed={includeClosedIssues}
-							onSelectionChange={handleIssueSelectionChange}
+			<div className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden">
+				{showTasks &&
+					(viewMode === "board" ? (
+						<BoardContent
+							filterTab={currentTab}
+							searchQuery={deferredSearchQuery}
+							assigneeFilter={assigneeFilter}
+							linearProjectFilter={linearProjectFilter}
+							onTaskClick={handleTaskClick}
 						/>
-					)}
-				</div>
-			)}
+					) : (
+						<TableContent
+							filterTab={currentTab}
+							searchQuery={deferredSearchQuery}
+							assigneeFilter={assigneeFilter}
+							linearProjectFilter={linearProjectFilter}
+							onTaskClick={handleTaskClick}
+							onSelectionChange={handleSelectionChange}
+						/>
+					))}
+				{showLinear && (
+					<LinearIssuesContent
+						filters={{
+							teamId: linearTeamFilter,
+							status: currentTab,
+							assignee: linearAssigneeFilter,
+							search: searchQuery,
+						}}
+						viewMode={viewMode}
+						onOpen={handleLinearIssueOpen}
+					/>
+				)}
+				{showIssues && (
+					<RepositoryIssuesContent
+						key={taskSource}
+						provider={typeTab === "gitlab-issues" ? "gitlab" : "github"}
+						projectFilters={projectFilters}
+						projectTargets={issueProjectTargets}
+						areProjectsReady={areProjectsReady}
+						hasProjects={v2Projects.length > 0}
+						searchQuery={searchQuery}
+						includeClosed={includeClosedIssues}
+						onSelectionChange={handleIssueSelectionChange}
+					/>
+				)}
+			</div>
 		</div>
 	);
 }

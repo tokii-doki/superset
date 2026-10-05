@@ -30,6 +30,7 @@ interface PullRequestsViewProps {
 	selectedPrProvider?: "github" | "gitlab";
 	selectedPrInstance?: string | null;
 	selectedPrRepoPath?: string | null;
+	selectedPrRepo?: string | null;
 }
 
 export function PullRequestsView({
@@ -44,6 +45,7 @@ export function PullRequestsView({
 	selectedPrProvider = "github",
 	selectedPrInstance = null,
 	selectedPrRepoPath = null,
+	selectedPrRepo = null,
 }: PullRequestsViewProps) {
 	const navigate = useNavigate();
 	const {
@@ -103,6 +105,7 @@ export function PullRequestsView({
 							provider: selectedPrProvider === "gitlab" ? "gitlab" : undefined,
 							instance: selectedPrInstance ?? undefined,
 							repoPath: selectedPrRepoPath ?? undefined,
+							repo: selectedPrRepo ?? undefined,
 						},
 						replace: true,
 					})
@@ -115,6 +118,7 @@ export function PullRequestsView({
 			selectedPrProvider,
 			selectedPrInstance,
 			selectedPrRepoPath,
+			selectedPrRepo,
 		],
 	);
 	// Sync only from the URL: depending on storedSearch would snap the input

@@ -34,6 +34,53 @@ afterEach(() => {
 });
 
 describe("buildSubmitPrompt", () => {
+	test("includes Linear, GitHub, and GitLab context in the same prompt", () => {
+		const linearIssue: LinkedIssue = {
+			slug: "ENG-42",
+			title: "Linear issue",
+			source: "linear",
+			url: "https://linear.app/example/issue/ENG-42",
+		};
+		const githubIssue: LinkedIssue = {
+			slug: "github-42",
+			title: "GitHub issue",
+			source: "github",
+			url: "https://github.com/example/app/issues/42",
+			number: 42,
+		};
+		useNewWorkspacePromptContextStore.setState({
+			entries: new Map([
+				[
+					`linear-issue:${linearIssue.slug}`,
+					{ state: "ready", body: { text: "Linear description" } },
+				],
+				[
+					issueContextKey(githubIssue),
+					{ state: "ready", body: { text: "GitHub description" } },
+				],
+			]),
+		});
+		const prompt = buildSubmitPrompt({
+			userPrompt: "Implement all linked issues",
+			linkedPR: null,
+			linkedIssues: [
+				linearIssue,
+				githubIssue,
+				{ ...issueA, body: "GitLab description" },
+			],
+		});
+		expect(prompt).toContain("Implement all linked issues");
+		expect(prompt).toContain(
+			"Linked Linear issue — ENG-42: Linear issue\nhttps://linear.app/example/issue/ENG-42\n\nLinear description",
+		);
+		expect(prompt).toContain(
+			"Linked GitHub issue — #42: GitHub issue\nhttps://github.com/example/app/issues/42\n\nGitHub description",
+		);
+		expect(prompt).toContain(
+			"Linked GitLab issue — #42: First issue\nhttps://gitlab.example.com/group/a/-/issues/42\n\nGitLab description",
+		);
+	});
+
 	test("keeps same-IID issue bodies scoped to their project", () => {
 		useNewWorkspacePromptContextStore.setState({
 			entries: new Map([
