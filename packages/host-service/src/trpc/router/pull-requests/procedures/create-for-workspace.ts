@@ -3,16 +3,11 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { workspaces } from "../../../../db/schema";
 import { createGitEnvResolver } from "../../../../runtime/git";
-import { gitLabProjectApiPath } from "../../../../source-control/gitlab/merge-requests";
 import { getHostWorkerPool } from "../../../../workers/host-worker-pool";
 import { gitPrHeadBaseTask } from "../../../../workers/tasks/git";
 import { protectedProcedure } from "../../../index";
 import { resolveWorktreePath } from "../../git/utils/resolve-worktree";
-import { actionRejectionError } from "../../github/github";
-import {
-	resolveGithubRepo,
-	resolveGitLabRepo,
-} from "../../workspace-creation/shared/project-helpers";
+import { createProjectForge } from "../../utils/project-forge";
 
 const createInputSchema = z.object({
 	workspaceId: z.string(),
@@ -23,7 +18,7 @@ const createInputSchema = z.object({
 });
 
 /**
- * Creates a GitHub PR from the workspace's current branch. The base is the
+ * Creates a PR or MR from the workspace's current branch. The base is the
  * branch's configured `branch.<name>.base` (what the Changes panel's base
  * selector writes) falling back to the repo default branch. After creation
  * the workspace's PR link is refreshed immediately so the UI doesn't wait
@@ -73,65 +68,20 @@ export const createForWorkspace = protectedProcedure
 			});
 		}
 
-		if (input.provider === "gitlab") {
-			const identity = await resolveGitLabRepo(ctx, workspace.projectId);
-			const result = await ctx.gitlab.api<{ iid: number; web_url: string }>(
-				identity,
-				`${gitLabProjectApiPath(identity)}/merge_requests`,
-				{
-					method: "POST",
-					fields: {
-						source_branch: head,
-						target_branch: base,
-						title: input.draft ? `Draft: ${input.title}` : input.title,
-						...(input.body ? { description: input.body } : {}),
-					},
-				},
-			);
-			try {
-				await ctx.runtime.pullRequests.refreshPullRequestsByWorkspaces([
-					input.workspaceId,
-				]);
-			} catch (error) {
-				console.warn(
-					"[pull-requests:create-for-workspace] created MR but failed to refresh workspace link",
-					error,
-				);
-			}
-			return { number: result.iid, url: result.web_url };
-		}
-		const repo = await resolveGithubRepo(ctx, workspace.projectId);
-		const octokit = await ctx.github();
-		let created: { number: number; html_url: string };
-		try {
-			const { data } = await octokit.pulls.create({
-				owner: repo.owner,
-				repo: repo.name,
-				title: input.title,
-				head,
-				base,
-				draft: input.draft,
-				...(input.body ? { body: input.body } : {}),
-			});
-			created = data;
-		} catch (error) {
-			throw actionRejectionError(
-				error,
-				"GitHub refused to create the pull request.",
-			);
-		}
-		// The PR exists at this point — a refresh hiccup (rate limit, transient
-		// network) must not surface as a create failure; the background sync
-		// links it within its next pass anyway.
+		const created = await createProjectForge(
+			ctx,
+			{ projectId: workspace.projectId, provider: input.provider },
+			"repository",
+		).create({ ...input, head, base });
 		try {
 			await ctx.runtime.pullRequests.refreshPullRequestsByWorkspaces([
 				input.workspaceId,
 			]);
 		} catch (error) {
 			console.warn(
-				"[pull-requests:create-for-workspace] created PR but failed to refresh workspace link",
+				"[pull-requests:create-for-workspace] created request but failed to refresh workspace link",
 				{ workspaceId: input.workspaceId, prNumber: created.number, error },
 			);
 		}
-		return { number: created.number, url: created.html_url };
+		return created;
 	});

@@ -18,24 +18,13 @@ interface SyncPullRequestAfterWriteInput {
 	action: PullRequestWrite;
 }
 
-/**
- * After GitHub accepted a state change, bring the host's own copies in line
- * before the caller's refetch lands: the content cache would replay the
- * pre-write `gh pr view` for up to its TTL, and the `pull_requests` row the
- * sidebar chips read would wait for the next sweep. The row gets the state
- * the write implies first, so it is right even when the refresh cannot
- * fetch (no upstream to look up, a `gh` timeout, no linked workspace); the
- * refresh then fills in checks, reviews and GitHub's own timestamps for the
- * workspaces linked to this PR, through the per-workspace sync queue.
- *
- * Never throws: GitHub already applied the change, so nothing here may
- * surface as a failed action. The sweep heals whatever a failure skipped.
- */
 export async function syncPullRequestAfterWrite(
 	ctx: Pick<HostServiceContext, "db" | "runtime">,
 	input: SyncPullRequestAfterWriteInput,
 ): Promise<void> {
-	evictPullRequestContent(input.repo, input.prNumber);
+	if (!input.repo.provider || input.repo.provider === "github") {
+		evictPullRequestContent(input.repo, input.prNumber);
+	}
 	let workspaceIds: string[] = [];
 	try {
 		const rows = findPullRequestRows(ctx.db, input.repo, input.prNumber);
@@ -52,7 +41,7 @@ export async function syncPullRequestAfterWrite(
 		);
 	} catch (error) {
 		console.warn(
-			`[pull-requests:${input.action}] GitHub applied the change but the host-side sync failed`,
+			`[pull-requests:${input.action}] Forge applied the change but the host-side sync failed`,
 			{
 				repo: `${input.repo.owner}/${input.repo.name}`,
 				prNumber: input.prNumber,
@@ -80,7 +69,7 @@ function recordWrittenState(
 	db.update(pullRequests)
 		.set({
 			state,
-			// Observation time until a fetch carries GitHub's own, never cleared.
+			// Observation time until a fetch carries the forge's timestamp; never cleared.
 			mergedAt: action === "merge" ? (row.mergedAt ?? now) : row.mergedAt,
 			updatedAt: now,
 		})

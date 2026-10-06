@@ -1,3 +1,4 @@
+import type { SourceControlProvider } from "@superset/shared/source-control";
 import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { HostDb } from "../../../../db";
 import { pullRequests, workspaces } from "../../../../db/schema";
@@ -5,6 +6,8 @@ import { pullRequests, workspaces } from "../../../../db/schema";
 export interface RepoIdentity {
 	owner: string;
 	name: string;
+	provider?: SourceControlProvider;
+	instance?: string;
 }
 
 export interface LinkedPullRequestRow {
@@ -37,7 +40,11 @@ export function findPullRequestRows(
 		.from(pullRequests)
 		.where(
 			and(
-				eq(pullRequests.repoProvider, "github"),
+				eq(pullRequests.repoProvider, repo.provider ?? "github"),
+				eq(
+					sql`lower(${pullRequests.repoInstance})`,
+					(repo.instance ?? "https://github.com").toLowerCase(),
+				),
 				eq(sql`lower(${pullRequests.repoOwner})`, repo.owner.toLowerCase()),
 				eq(sql`lower(${pullRequests.repoName})`, repo.name.toLowerCase()),
 				eq(pullRequests.prNumber, prNumber),

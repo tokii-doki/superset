@@ -1,14 +1,6 @@
 import { z } from "zod";
-import {
-	assertGitLabIdentity,
-	getGitLabMergeRequestContent,
-} from "../../../../source-control/gitlab/merge-requests";
 import { protectedProcedure } from "../../../index";
-import {
-	resolveGithubRepo,
-	resolveGitLabRepo,
-} from "../../workspace-creation/shared/project-helpers";
-import { fetchPullRequestContent } from "../shared/fetch-pull-request-content";
+import { createProjectForge } from "../../utils/project-forge";
 
 const getContentInputSchema = z.object({
 	projectId: z.string(),
@@ -20,12 +12,6 @@ const getContentInputSchema = z.object({
 
 export const getContent = protectedProcedure
 	.input(getContentInputSchema)
-	.query(async ({ ctx, input }) => {
-		if (input.provider === "gitlab") {
-			const identity = await resolveGitLabRepo(ctx, input.projectId);
-			assertGitLabIdentity(identity, input);
-			return getGitLabMergeRequestContent(ctx.gitlab, identity, input.prNumber);
-		}
-		const repo = await resolveGithubRepo(ctx, input.projectId);
-		return fetchPullRequestContent(repo, input.prNumber);
-	});
+	.query(async ({ ctx, input }) =>
+		createProjectForge(ctx, input).getContent(input),
+	);

@@ -204,6 +204,20 @@ describe("GitLab merge request host routes", () => {
 	});
 
 	test("mutations target the MR and reject a changed head", async () => {
+		const { id: pullRequestId } = seedPullRequest(host, {
+			projectId,
+			repoProvider: "gitlab",
+			repoOwner: "group/subgroup",
+			repoName: "project",
+			prNumber: 42,
+			headBranch: "feature/parser",
+			url: mergeRequest.web_url,
+		});
+		host.db
+			.update(pullRequests)
+			.set({ repoInstance: instance })
+			.where(eq(pullRequests.id, pullRequestId))
+			.run();
 		const target = {
 			projectId,
 			prNumber: 42,
@@ -225,12 +239,26 @@ describe("GitLab merge request host routes", () => {
 			...target,
 			state: "closed",
 		});
+		expect(
+			host.db
+				.select()
+				.from(pullRequests)
+				.where(eq(pullRequests.id, pullRequestId))
+				.get()?.state,
+		).toBe("closed");
 		await host.trpc.pullRequests.markReady.mutate(target);
 		await host.trpc.pullRequests.mergePR.mutate({
 			...target,
 			headSha,
 			mergeMethod: "squash",
 		});
+		expect(
+			host.db
+				.select()
+				.from(pullRequests)
+				.where(eq(pullRequests.id, pullRequestId))
+				.get()?.state,
+		).toBe("merged");
 		expect(calls).toContainEqual(
 			expect.objectContaining({
 				endpoint: `projects/${projectNumericId}/merge_requests/42/merge`,

@@ -1,4 +1,6 @@
 import { afterAll, afterEach, describe, expect, spyOn, test } from "bun:test";
+import { eq } from "drizzle-orm";
+import { pullRequests } from "../../../../db/schema";
 import type { HostServiceContext } from "../../../../types";
 import {
 	pullRequestContentCacheKey,
@@ -86,6 +88,52 @@ describe("syncPullRequestAfterWrite", () => {
 			action: "reopen",
 		});
 		expect(readPullRequestRow(db)).toMatchObject({ state: "draft" });
+	});
+
+	test("syncs only the selected forge instance and keeps the GitHub content cache", async () => {
+		const db = createTestDb();
+		seedLinkedPullRequest(db);
+		const original = db
+			.select()
+			.from(pullRequests)
+			.where(eq(pullRequests.id, "pr-42"))
+			.get();
+		if (!original) throw new Error("Missing fixture");
+		db.insert(pullRequests)
+			.values([
+				{
+					...original,
+					id: "gitlab-selected",
+					repoProvider: "gitlab",
+					repoInstance: "https://gitlab.example.com",
+				},
+				{
+					...original,
+					id: "gitlab-other",
+					repoProvider: "gitlab",
+					repoInstance: "https://other.example.com",
+				},
+			])
+			.run();
+		const key = pullRequestContentCacheKey(REPO, PR_NUMBER);
+		writePullRequestContentCache(key, Promise.resolve({ state: "open" }));
+		const { ctx, refreshed } = recordingContext(db);
+
+		await syncPullRequestAfterWrite(ctx, {
+			repo: {
+				...REPO,
+				provider: "gitlab",
+				instance: "https://gitlab.example.com",
+			},
+			prNumber: PR_NUMBER,
+			action: "close",
+		});
+
+		expect(readPullRequestRow(db, "gitlab-selected")?.state).toBe("closed");
+		expect(readPullRequestRow(db, "gitlab-other")?.state).toBe("open");
+		expect(readPullRequestRow(db)?.state).toBe("open");
+		expect(readPullRequestContentCache(key)).not.toBeNull();
+		expect(refreshed).toEqual([]);
 	});
 
 	test("finds the row when a sibling project on the same repository owns it", async () => {
