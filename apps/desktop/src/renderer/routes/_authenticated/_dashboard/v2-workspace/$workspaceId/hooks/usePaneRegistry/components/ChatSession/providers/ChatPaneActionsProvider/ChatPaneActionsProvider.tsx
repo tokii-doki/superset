@@ -4,6 +4,7 @@ import type { OpenFile } from "../../../../../../types";
 export type ChatPaneActions = {
 	/** Absent where the chat has no workspace to open files into. */
 	openFile?: OpenFile | undefined;
+	workspaceId?: string | undefined;
 };
 
 const ChatPaneActionsContext = createContext<ChatPaneActions>({});
@@ -16,8 +17,12 @@ const ChatPaneActionsContext = createContext<ChatPaneActions>({});
 export function ChatPaneActionsProvider({
 	children,
 	openFile,
+	workspaceId,
 }: ChatPaneActions & { children: ReactNode }) {
-	const value = useMemo<ChatPaneActions>(() => ({ openFile }), [openFile]);
+	const value = useMemo<ChatPaneActions>(
+		() => ({ openFile, workspaceId }),
+		[openFile, workspaceId],
+	);
 	return (
 		<ChatPaneActionsContext.Provider value={value}>
 			{children}

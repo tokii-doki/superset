@@ -426,6 +426,10 @@ msgstr "{0} installed"
 msgid "{0} is already assigned to \"{1}\"."
 msgstr "{0} is already assigned to \"{1}\"."
 
+#. placeholder {0}: params?.key
+msgid "{0} is already used for tasks in this organization."
+msgstr "{0} is already used for tasks in this organization."
+
 #. placeholder {0}: params?.repoFullName
 msgid "{0} is not a repository the GitHub App is installed on"
 msgstr "{0} is not a repository the GitHub App is installed on"
@@ -711,9 +715,6 @@ msgstr "{actor} unlinked the workspace {workspace}"
 
 msgid "{actual} so far · ~{projected} projected"
 msgstr "{actual} so far · ~{projected} projected"
-
-msgid "{backgroundCount, plural, one {# background terminal session} other {# background terminal sessions}}"
-msgstr "{backgroundCount, plural, one {# background terminal session} other {# background terminal sessions}}"
 
 msgid "{behindCount, plural, one {Behind main by # commit, needs rebase} other {Behind main by # commits, needs rebase}}"
 msgstr "{behindCount, plural, one {Behind main by # commit, needs rebase} other {Behind main by # commits, needs rebase}}"
@@ -1036,6 +1037,9 @@ msgstr "{previewSize}px · {0} line height"
 
 msgid "{provider} logo"
 msgstr "{provider} logo"
+
+msgid "{queued, plural, one {# message waiting in the queue} other {# messages waiting in the queue}}"
+msgstr "{queued, plural, one {# message waiting in the queue} other {# messages waiting in the queue}}"
 
 msgid "{readPercent}% read"
 msgstr "{readPercent}% read"
@@ -1465,6 +1469,9 @@ msgstr "A separate pay-per-token profile. The key stays in the {0} CLI."
 msgid "A separate profile that shares your skills, plugins, MCP servers, and settings."
 msgstr "A separate profile that shares your skills, plugins, MCP servers, and settings."
 
+msgid "A task key is 1 to 5 letters or numbers and starts with a letter."
+msgstr "A task key is 1 to 5 letters or numbers and starts with a letter."
+
 msgid "a teammate"
 msgstr "a teammate"
 
@@ -1703,6 +1710,12 @@ msgstr "Add photos or files"
 msgid "Add project"
 msgstr "Add project"
 
+msgid "Add Project from Folder"
+msgstr "Add Project from Folder"
+
+msgid "Add Project from Folder..."
+msgstr "Add Project from Folder..."
+
 msgid "Add prompt e.g. look for crashes in $sentry"
 msgstr "Add prompt e.g. look for crashes in $sentry"
 
@@ -1738,6 +1751,9 @@ msgstr "Add this label"
 
 msgid "Add to Dictionary"
 msgstr "Add to Dictionary"
+
+msgid "Add to favorites"
+msgstr "Add to favorites"
 
 msgid "Add to project"
 msgstr "Add to project"
@@ -1997,6 +2013,9 @@ msgstr "All in current tab"
 msgid "All in current tab (split panes)"
 msgstr "All in current tab (split panes)"
 
+msgid "All models"
+msgstr "All models"
+
 msgid "All objectives cleared. Top rung, nothing left to reach for."
 msgstr "All objectives cleared. Top rung, nothing left to reach for."
 
@@ -2014,9 +2033,6 @@ msgstr "All of your data will be permanently deleted after {ACCOUNT_DELETION_GRA
 
 msgid "All open terminal sessions will be killed and any running host-services will be stopped. Use “Close Superset” instead if you want services to keep running for the next launch."
 msgstr "All open terminal sessions will be killed and any running host-services will be stopped. Use “Close Superset” instead if you want services to keep running for the next launch."
-
-msgid "All pages"
-msgstr "All pages"
 
 msgid "All plans"
 msgstr "All plans"
@@ -2436,17 +2452,11 @@ msgstr "ascending"
 msgid "Ask an agent to publish one from the desktop app."
 msgstr "Ask an agent to publish one from the desktop app."
 
-msgid "Ask before editing files or running commands"
-msgstr "Ask before editing files or running commands"
-
 msgid "Ask for approval"
 msgstr "Ask for approval"
 
 msgid "Ask for this to be removed"
 msgstr "Ask for this to be removed"
-
-msgid "Ask only for actions that look risky"
-msgstr "Ask only for actions that look risky"
 
 msgid "Ask the agent, @mention files, run /commands"
 msgstr "Ask the agent, @mention files, run /commands"
@@ -2465,6 +2475,12 @@ msgstr "Ask to make changes"
 
 msgid "Ask to make changes, @mention files, run /commands"
 msgstr "Ask to make changes, @mention files, run /commands"
+
+msgid "Asks before edits and commands"
+msgstr "Asks before edits and commands"
+
+msgid "Asks only for risky actions"
+msgstr "Asks only for risky actions"
 
 msgid "Aspect Ratio"
 msgstr "Aspect Ratio"
@@ -2770,14 +2786,20 @@ msgstr "Back to the leaderboard"
 msgid "Background"
 msgstr "Background"
 
+msgid "Background processes"
+msgstr "Background processes"
+
 msgid "Background processes in chat"
 msgstr "Background processes in chat"
+
+msgid "Background task"
+msgstr "Background task"
 
 msgid "Background terminal memory"
 msgstr "Background terminal memory"
 
-msgid "Background terminal sessions"
-msgstr "Background terminal sessions"
+msgid "Background work and pages"
+msgstr "Background work and pages"
 
 msgid "Backlog"
 msgstr "Backlog"
@@ -3807,9 +3829,6 @@ msgstr "Close terminal"
 
 msgid "Close Terminal"
 msgstr "Close Terminal"
-
-msgid "Close terminal session"
-msgstr "Close terminal session"
 
 msgid "Close the current pane"
 msgstr "Close the current pane"
@@ -4883,6 +4902,9 @@ msgstr "Couldn't load automations"
 msgid "Couldn't load contributors — type a username instead."
 msgstr "Couldn't load contributors — type a username instead."
 
+msgid "Couldn't load earlier messages. Retry"
+msgstr "Couldn't load earlier messages. Retry"
+
 msgid "Couldn't load issues: {msg}"
 msgstr "Couldn't load issues: {msg}"
 
@@ -4958,6 +4980,9 @@ msgstr "Couldn't restart the workspace: {0}"
 msgid "Couldn't restore \"{projectName}\""
 msgstr "Couldn't restore \"{projectName}\""
 
+msgid "Couldn't restore \"{workspaceName}\""
+msgstr "Couldn't restore \"{workspaceName}\""
+
 msgid "Couldn't save"
 msgstr "Couldn't save"
 
@@ -5008,6 +5033,9 @@ msgstr "Couldn't start workspace"
 
 msgid "Couldn't stop the agent's terminal"
 msgstr "Couldn't stop the agent's terminal"
+
+msgid "Couldn't stop the background task"
+msgstr "Couldn't stop the background task"
 
 msgid "Couldn't stop the chat"
 msgstr "Couldn't stop the chat"
@@ -6693,9 +6721,6 @@ msgstr "Failed to clear terminal history"
 msgid "Failed to close port {0}"
 msgstr "Failed to close port {0}"
 
-msgid "Failed to close terminal session"
-msgstr "Failed to close terminal session"
-
 msgid "Failed to connect to Google. Please try again."
 msgstr "Failed to connect to Google. Please try again."
 
@@ -7137,6 +7162,9 @@ msgstr "FAQ"
 
 msgid "Fatal"
 msgstr "Fatal"
+
+msgid "Favorites"
+msgstr "Favorites"
 
 msgid "Featured"
 msgstr "Featured"
@@ -9153,9 +9181,6 @@ msgstr "load agent settings"
 msgid "Load diff"
 msgstr "Load diff"
 
-msgid "Load earlier messages"
-msgstr "Load earlier messages"
-
 msgid "Load more"
 msgstr "Load more"
 
@@ -9239,9 +9264,6 @@ msgstr "Loading repositories..."
 
 msgid "Loading review..."
 msgstr "Loading review..."
-
-msgid "Loading sessions…"
-msgstr "Loading sessions…"
 
 msgid "Loading terminal scripts..."
 msgstr "Loading terminal scripts..."
@@ -9585,6 +9607,9 @@ msgstr "Merge Commit"
 msgid "Merge failed: {0}"
 msgstr "Merge failed: {0}"
 
+msgid "Merge into center"
+msgstr "Merge into center"
+
 msgid "Merge merge request"
 msgstr "Merge merge request"
 
@@ -9861,8 +9886,14 @@ msgstr "Most of software history"
 msgid "Move {count} to Group"
 msgstr "Move {count} to Group"
 
+msgid "Move to Center"
+msgstr "Move to Center"
+
 msgid "Move to group"
 msgstr "Move to group"
+
+msgid "Move to Right Side"
+msgstr "Move to Right Side"
 
 msgid "Move to Tab"
 msgstr "Move to Tab"
@@ -10011,6 +10042,9 @@ msgstr "Network Changed"
 
 msgid "Never"
 msgstr "Never"
+
+msgid "Never asks before acting"
+msgstr "Never asks before acting"
 
 msgctxt "badge on a page published since the menu was last opened"
 msgid "New"
@@ -10182,8 +10216,8 @@ msgstr "Next slide"
 msgid "Next Tab"
 msgstr "Next Tab"
 
-msgid "Next Tab (Alt)"
-msgstr "Next Tab (Alt)"
+msgid "Next Tab (Second Shortcut)"
+msgstr "Next Tab (Second Shortcut)"
 
 msgid "Next Workspace"
 msgstr "Next Workspace"
@@ -10270,9 +10304,6 @@ msgstr "No authors found."
 
 msgid "No automations match"
 msgstr "No automations match"
-
-msgid "No background terminal sessions"
-msgstr "No background terminal sessions"
 
 msgid "No branches found"
 msgstr "No branches found"
@@ -10391,6 +10422,9 @@ msgstr "No extended thinking"
 msgid "No failed runs."
 msgstr "No failed runs."
 
+msgid "No favorite models"
+msgstr "No favorite models"
+
 msgid "No files found"
 msgstr "No files found"
 
@@ -10477,6 +10511,9 @@ msgstr "No matches"
 
 msgid "No matching files"
 msgstr "No matching files"
+
+msgid "No matching models"
+msgstr "No matching models"
 
 msgid "No matching org members."
 msgstr "No matching org members."
@@ -10909,6 +10946,9 @@ msgstr "Nothing needs a retry"
 msgid "Nothing published in the last 30 days yet. Your rank appears once usage from this machine syncs, publishing as <0>{handle}</0>."
 msgstr "Nothing published in the last 30 days yet. Your rank appears once usage from this machine syncs, publishing as <0>{handle}</0>."
 
+msgid "Nothing running"
+msgstr "Nothing running"
+
 msgid "Nothing was missed"
 msgstr "Nothing was missed"
 
@@ -11171,14 +11211,14 @@ msgstr "Open {path} in file pane"
 msgid "Open a multiline prompt composer for the active terminal"
 msgstr "Open a multiline prompt composer for the active terminal"
 
+msgid "Open a pane, or drag one here from the center."
+msgstr "Open a pane, or drag one here from the center."
+
 msgid "Open a pull request to view review status, checks, and comments."
 msgstr "Open a pull request to view review status, checks, and comments."
 
 msgid "Open actions menu"
 msgstr "Open actions menu"
-
-msgid "Open an existing project folder"
-msgstr "Open an existing project folder"
 
 msgid "Open anyway"
 msgstr "Open anyway"
@@ -11282,9 +11322,6 @@ msgstr "Open in Any IDE"
 
 msgid "Open in app"
 msgstr "Open in app"
-
-msgid "Open in App"
-msgstr "Open in App"
 
 msgid "Open in browser"
 msgstr "Open in browser"
@@ -11483,9 +11520,6 @@ msgstr "Open pull requests"
 msgid "Open recent"
 msgstr "Open recent"
 
-msgid "Open Repo..."
-msgstr "Open Repo..."
-
 msgid "Open roles"
 msgstr "Open roles"
 
@@ -11567,14 +11601,14 @@ msgstr "Open the run's workspace"
 msgid "open the task in a workspace"
 msgstr "open the task in a workspace"
 
+msgid "Open the workspace in the app picked in the Open In menu (VS Code, Cursor, etc.)"
+msgstr "Open the workspace in the app picked in the Open In menu (VS Code, Cursor, etc.)"
+
 msgid "Open this run's workspace"
 msgstr "Open this run's workspace"
 
 msgid "Open workspace"
 msgstr "Open workspace"
-
-msgid "Open workspace in external app (Cursor, VS Code, etc.)"
-msgstr "Open workspace in external app (Cursor, VS Code, etc.)"
 
 msgid "OpenAI rejected this API key."
 msgstr "OpenAI rejected this API key."
@@ -12045,6 +12079,9 @@ msgstr "Pick a different element"
 msgid "Pick a different element (esc)"
 msgstr "Pick a different element (esc)"
 
+msgid "Pick a folder on disk and add it as a project"
+msgstr "Pick a folder on disk and add it as a project"
+
 msgid "Pick a folder…"
 msgstr "Pick a folder…"
 
@@ -12284,6 +12321,9 @@ msgstr "Preferences"
 msgid "Prefix"
 msgstr "Prefix"
 
+msgid "Prefix of this team's task IDs. Changing it renames every task in the team."
+msgstr "Prefix of this team's task IDs. Changing it renames every task in the team."
+
 msgid "Preparing"
 msgstr "Preparing"
 
@@ -12353,8 +12393,8 @@ msgstr "Previous slide"
 msgid "Previous Tab"
 msgstr "Previous Tab"
 
-msgid "Previous Tab (Alt)"
-msgstr "Previous Tab (Alt)"
+msgid "Previous Tab (Second Shortcut)"
+msgstr "Previous Tab (Second Shortcut)"
 
 msgid "Previous Workspace"
 msgstr "Previous Workspace"
@@ -12769,12 +12809,6 @@ msgstr "Read"
 msgid "Read and plan without changing anything"
 msgstr "Read and plan without changing anything"
 
-msgid "Read files; ask for anything else"
-msgstr "Read files; ask for anything else"
-
-msgid "Read only"
-msgstr "Read only"
-
 msgid "Read the changelog"
 msgstr "Read the changelog"
 
@@ -13034,6 +13068,9 @@ msgstr "Remove {label}?"
 
 msgid "Remove attachment"
 msgstr "Remove attachment"
+
+msgid "Remove from favorites"
+msgstr "Remove from favorites"
 
 msgid "Remove from Queue"
 msgstr "Remove from Queue"
@@ -13483,6 +13520,9 @@ msgstr "Restore the workspace you just archived"
 msgid "Restore this version?"
 msgstr "Restore this version?"
 
+msgid "Restore width"
+msgstr "Restore width"
+
 msgid "Restored"
 msgstr "Restored"
 
@@ -13491,6 +13531,12 @@ msgstr "Restored \"{name}\""
 
 msgid "Restored \"{projectName}\""
 msgstr "Restored \"{projectName}\""
+
+msgid "Restored \"{workspaceName}\""
+msgstr "Restored \"{workspaceName}\""
+
+msgid "Restoring \"{workspaceName}\"…"
+msgstr "Restoring \"{workspaceName}\"…"
 
 msgid "Restoring your session"
 msgstr "Restoring your session"
@@ -14077,6 +14123,9 @@ msgstr "Search Linear"
 msgid "Search Linear…"
 msgstr "Search Linear…"
 
+msgid "Search models"
+msgstr "Search models"
+
 msgid "Search pages"
 msgstr "Search pages"
 
@@ -14304,9 +14353,6 @@ msgstr "Select issue"
 
 msgid "Select method"
 msgstr "Select method"
-
-msgid "Select model"
-msgstr "Select model"
 
 msgid "Select new project location"
 msgstr "Select new project location"
@@ -15126,6 +15172,9 @@ msgstr "Spend"
 msgid "Split"
 msgstr "Split"
 
+msgid "Split Along Longer Side"
+msgstr "Split Along Longer Side"
+
 msgid "Split button mirrors desktop's OpenInButton; picker trigger mirrors PickerTrigger"
 msgstr "Split button mirrors desktop's OpenInButton; picker trigger mirrors PickerTrigger"
 
@@ -15146,9 +15195,6 @@ msgstr "Split pane"
 
 msgid "Split Pane"
 msgstr "Split Pane"
-
-msgid "Split Pane Auto"
-msgstr "Split Pane Auto"
 
 msgid "Split Right"
 msgstr "Split Right"
@@ -15185,6 +15231,9 @@ msgstr "Split with Mobile Simulator"
 
 msgid "Split with New Browser"
 msgstr "Split with New Browser"
+
+msgid "Split with Sandbox Desktop"
+msgstr "Split with Sandbox Desktop"
 
 msgid "Squash & Merge"
 msgstr "Squash & Merge"
@@ -15421,6 +15470,12 @@ msgstr "Stop"
 #. placeholder {0}: ringtone.name
 msgid "Stop {0}"
 msgstr "Stop {0}"
+
+msgid "Stop {label}"
+msgstr "Stop {label}"
+
+msgid "Stop all agent background processes"
+msgstr "Stop all agent background processes"
 
 msgid "Stop dictation"
 msgstr "Stop dictation"
@@ -15923,6 +15978,9 @@ msgstr "Task"
 
 msgid "Task ID copied"
 msgstr "Task ID copied"
+
+msgid "Task key"
+msgstr "Task key"
 
 msgid "Task Launch"
 msgstr "Task Launch"
@@ -16838,9 +16896,6 @@ msgstr "This will unstage and revert all staged changes. Staged new files will b
 msgid "This will unstage and revert all staged changes. Staged new files will be deleted. This cannot be undone."
 msgstr "This will unstage and revert all staged changes. Staged new files will be deleted. This cannot be undone."
 
-msgid "This workspace"
-msgstr "This workspace"
-
 msgid "This workspace has no project to branch from"
 msgstr "This workspace has no project to branch from"
 
@@ -16924,6 +16979,9 @@ msgstr "Toggle plan"
 
 msgid "Toggle right sidebar"
 msgstr "Toggle right sidebar"
+
+msgid "Toggle Right Sidebar"
+msgstr "Toggle Right Sidebar"
 
 msgid "Toggle Scripts Bar"
 msgstr "Toggle Scripts Bar"
@@ -17394,9 +17452,6 @@ msgstr "Unresolve"
 
 msgid "Unresolved"
 msgstr "Unresolved"
-
-msgid "Unrestricted access to the internet and any file on your computer"
-msgstr "Unrestricted access to the internet and any file on your computer"
 
 msgid "Unsaved changes"
 msgstr "Unsaved changes"
@@ -18216,6 +18271,9 @@ msgstr "Workspace accent-color picker"
 
 msgid "Workspace actions"
 msgstr "Workspace actions"
+
+msgid "Workspace activity"
+msgstr "Workspace activity"
 
 msgid "Workspace agents"
 msgstr "Workspace agents"

@@ -19,6 +19,7 @@ export type LiveSessionOptions = {
 	sessionId: string;
 	scopeId: string;
 	harness: string;
+	terminalId?: string;
 	journal: ChatJournal;
 	publish: (envelope: Envelope) => void;
 	adapter: HarnessAdapter;
@@ -71,6 +72,10 @@ export class LiveSession {
 		return this.options.sessionId;
 	}
 
+	get terminalId(): string | undefined {
+		return this.options.terminalId;
+	}
+
 	get state(): SessionState {
 		return this.sessionState;
 	}
@@ -96,7 +101,11 @@ export class LiveSession {
 		);
 	}
 
-	prompt(content: UserContent[], clientId: string): PromptResult {
+	prompt(
+		content: UserContent[],
+		clientId: string,
+		steerTurnId?: string,
+	): PromptResult {
 		const itemId = this.mintId();
 		const queued = this.isBusy();
 		const item: UserMessage = {
@@ -108,12 +117,19 @@ export class LiveSession {
 			...(queued ? { queued: true } : {}),
 		};
 		const turnId = this.mintId();
-		this.appendDurable({ type: "item", item, turnId });
-
 		if (queued) {
 			this.queue.push({ item, content, turnId });
+			this.appendDurable({ type: "item", item, turnId });
+			if (
+				steerTurnId &&
+				this.currentTurn?.id === steerTurnId &&
+				this.currentTurn.status === "running"
+			) {
+				this.steerQueued(itemId);
+			}
 			return { itemId, queued: true };
 		}
+		this.appendDurable({ type: "item", item, turnId });
 		this.deliver({ item, content, turnId });
 		return { itemId, queued: false };
 	}
@@ -195,6 +211,13 @@ export class LiveSession {
 			throw new Error("this agent has no settings to change");
 		}
 		this.options.adapter.setConfigOption(configId, value);
+	}
+
+	stopBackgroundTask(taskId: string): Promise<boolean> {
+		return (
+			this.options.adapter.stopBackgroundTask?.(taskId) ??
+			Promise.resolve(false)
+		);
 	}
 
 	fork(): Promise<string | null> {

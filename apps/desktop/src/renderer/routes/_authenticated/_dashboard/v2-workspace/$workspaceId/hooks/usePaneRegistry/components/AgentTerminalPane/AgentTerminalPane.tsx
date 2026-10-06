@@ -11,6 +11,7 @@ import { AcpChatPane } from "./components/AcpChatPane";
 import { AcpChatPending } from "./components/AcpChatPane/components/AcpChatPending";
 import { useAgentSurface } from "./hooks/useAgentSurface";
 import { useAgentSurfaceSwitch } from "./hooks/useAgentSurfaceSwitch";
+import { saveChatMode } from "./utils/savedChatMode";
 
 /**
  * A terminal pane, shown on whichever surface its agent calls for. The choice
@@ -58,8 +59,9 @@ export function AgentTerminalPane({
 		}
 		return (
 			<AcpChatPane
-				key={data.terminalId}
+				key={`${data.terminalId}:${data.agent.id}`}
 				agent={data.agent}
+				isActive={ctx.isActive}
 				onFirstPromptSent={() => {
 					if (
 						data.pendingPrompt === undefined &&
@@ -87,19 +89,51 @@ export function AgentTerminalPane({
 						: null
 				}
 				modelId={data.chatModelId}
+				modelLabel={data.chatModelLabel}
 				modeId={data.chatModeId}
-				onAgentSessionChanged={(sessionId) => {
-					if (!data.agent) return;
+				onSessionInfo={({ harnessSessionId, title }) => {
+					const rebound = harnessSessionId !== undefined && data.agent;
+					const retitled = title !== undefined && title !== data.chatTitle;
+					if (!rebound && !retitled) return;
 					ctx.actions.updateData({
 						...data,
-						agent: { ...data.agent, sessionId },
+						...(rebound
+							? { agent: { ...rebound, sessionId: harnessSessionId } }
+							: {}),
+						...(retitled ? { chatTitle: title } : {}),
 					});
+				}}
+				onSwitchAgent={({ presetId, label, model, modeId, handoffPrompt }) => {
+					ctx.actions.setTitle(label);
+					const {
+						acpSessionId: _session,
+						chatModelId: _model,
+						chatModelLabel: _modelLabel,
+						chatModeId: _mode,
+						pendingPrompt: _prompt,
+						pendingAttachments: _attachments,
+						...rest
+					} = data;
+					ctx.actions.updateData({
+						...rest,
+						agent: { id: presetId },
+						...(model
+							? { chatModelId: model.id, chatModelLabel: model.label }
+							: {}),
+						...(modeId ? { chatModeId: modeId } : {}),
+						...(handoffPrompt ? { pendingPrompt: handoffPrompt } : {}),
+					});
+				}}
+				onModeChange={(chatModeId) => {
+					if (data.agent) saveChatMode(data.agent.id, chatModeId);
+					ctx.actions.updateData({ ...data, chatModeId });
 				}}
 				onSessionCreated={(acpSessionId) =>
 					ctx.actions.updateData({ ...data, acpSessionId })
 				}
 				onOpenFile={onOpenFile}
 				sessionId={data.acpSessionId ?? null}
+				terminalId={data.terminalId}
 				workspaceId={workspaceId}
 			/>
 		);

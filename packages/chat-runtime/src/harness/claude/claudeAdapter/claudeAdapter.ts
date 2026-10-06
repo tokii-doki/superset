@@ -57,6 +57,8 @@ export const CLAUDE_MODES = [
 	{ id: "bypassPermissions", label: "Full access" },
 ] as const satisfies readonly { id: ClaudePermissionMode; label: string }[];
 
+export const DEFAULT_CLAUDE_MODE: ClaudePermissionMode = "bypassPermissions";
+
 function claudeMode(modeId: string | undefined): ClaudePermissionMode {
 	return CLAUDE_MODES.find((mode) => mode.id === modeId)?.id ?? "default";
 }
@@ -193,7 +195,10 @@ export class ClaudeAdapter implements HarnessAdapter {
 		});
 		this.translator = translator;
 
-		this.modeId = claudeMode(startOptions.modeId);
+		this.modeId = claudeMode(
+			startOptions.modeId ??
+				(startOptions.resume ? undefined : DEFAULT_CLAUDE_MODE),
+		);
 		this.events.push({
 			kind: "session",
 			session: { modeId: this.modeId, availableModes: [...CLAUDE_MODES] },

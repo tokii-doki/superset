@@ -57,7 +57,7 @@ export function AgentMessageRow({
 		// reachable by keyboard regardless.
 		<div className="group/message flex flex-col gap-1">
 			<MarkdownView
-				className="text-foreground/[0.78] [&_em]:text-foreground [&_strong]:text-foreground"
+				className="text-foreground"
 				fading={fading}
 				text={paced.text}
 			/>

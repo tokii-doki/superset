@@ -426,6 +426,10 @@ msgstr "{0} geïnstalleerd"
 msgid "{0} is already assigned to \"{1}\"."
 msgstr "{0} is al toegewezen aan \"{1}\"."
 
+#. placeholder {0}: params?.key
+msgid "{0} is already used for tasks in this organization."
+msgstr "{0} wordt al gebruikt voor taken in deze organisatie."
+
 #. placeholder {0}: params?.repoFullName
 msgid "{0} is not a repository the GitHub App is installed on"
 msgstr "{0} is geen repository waarop de GitHub App is geïnstalleerd"
@@ -711,9 +715,6 @@ msgstr "{actor} heeft de koppeling met workspace {workspace} verwijderd"
 
 msgid "{actual} so far · ~{projected} projected"
 msgstr "{actual} tot nu toe · ~{projected} verwacht"
-
-msgid "{backgroundCount, plural, one {# background terminal session} other {# background terminal sessions}}"
-msgstr "{backgroundCount, plural, one {# terminalsessie op de achtergrond} other {# terminalsessies op de achtergrond}}"
 
 msgid "{behindCount, plural, one {Behind main by # commit, needs rebase} other {Behind main by # commits, needs rebase}}"
 msgstr "{behindCount, plural, one {# commit achter op main, rebase nodig} other {# commits achter op main, rebase nodig}}"
@@ -1036,6 +1037,9 @@ msgstr "{previewSize}px · regelhoogte {0}"
 
 msgid "{provider} logo"
 msgstr "logo van {provider}"
+
+msgid "{queued, plural, one {# message waiting in the queue} other {# messages waiting in the queue}}"
+msgstr "{queued, plural, one {# bericht wacht in de wachtrij} other {# berichten wachten in de wachtrij}}"
 
 msgid "{readPercent}% read"
 msgstr "{readPercent}% gelezen"
@@ -1465,6 +1469,9 @@ msgstr "Een apart profiel dat per token wordt afgerekend. De sleutel blijft in d
 msgid "A separate profile that shares your skills, plugins, MCP servers, and settings."
 msgstr "Een apart profiel dat je skills, plugins, MCP-servers en instellingen deelt."
 
+msgid "A task key is 1 to 5 letters or numbers and starts with a letter."
+msgstr "Een taaksleutel bestaat uit 1 tot 5 letters of cijfers en begint met een letter."
+
 msgid "a teammate"
 msgstr "een teamgenoot"
 
@@ -1703,6 +1710,12 @@ msgstr "Foto's of bestanden toevoegen"
 msgid "Add project"
 msgstr "Project toevoegen"
 
+msgid "Add Project from Folder"
+msgstr "Project toevoegen uit map"
+
+msgid "Add Project from Folder..."
+msgstr "Project toevoegen uit map..."
+
 msgid "Add prompt e.g. look for crashes in $sentry"
 msgstr "Voeg een prompt toe, bijv. zoek naar crashes in $sentry"
 
@@ -1738,6 +1751,9 @@ msgstr "Dit label toevoegen"
 
 msgid "Add to Dictionary"
 msgstr "Toevoegen aan woordenboek"
+
+msgid "Add to favorites"
+msgstr "Toevoegen aan favorieten"
 
 msgid "Add to project"
 msgstr "Aan project toevoegen"
@@ -1997,6 +2013,9 @@ msgstr "Alles in huidig tabblad"
 msgid "All in current tab (split panes)"
 msgstr "Alles in huidig tabblad (gesplitste panelen)"
 
+msgid "All models"
+msgstr "Alle modellen"
+
 msgid "All objectives cleared. Top rung, nothing left to reach for."
 msgstr "Alle doelen gehaald. Hoogste trede, er is niets meer om naar te streven."
 
@@ -2014,9 +2033,6 @@ msgstr "Al je gegevens worden na {ACCOUNT_DELETION_GRACE_DAYS} dagen definitief 
 
 msgid "All open terminal sessions will be killed and any running host-services will be stopped. Use “Close Superset” instead if you want services to keep running for the next launch."
 msgstr "Alle open terminalsessies worden beëindigd en draaiende hostservices worden gestopt. Gebruik “Superset sluiten” als je wilt dat de services blijven draaien voor de volgende keer."
-
-msgid "All pages"
-msgstr "Alle pagina's"
 
 msgid "All plans"
 msgstr "Alle plannen"
@@ -2436,17 +2452,11 @@ msgstr "oplopend"
 msgid "Ask an agent to publish one from the desktop app."
 msgstr "Vraag een agent om er een te publiceren vanuit de desktop-app."
 
-msgid "Ask before editing files or running commands"
-msgstr "Vragen voordat bestanden worden bewerkt of commando's worden uitgevoerd"
-
 msgid "Ask for approval"
 msgstr "Om goedkeuring vragen"
 
 msgid "Ask for this to be removed"
 msgstr "Vraag om verwijdering"
-
-msgid "Ask only for actions that look risky"
-msgstr "Alleen vragen bij acties die riskant lijken"
 
 msgid "Ask the agent, @mention files, run /commands"
 msgstr "Vraag de agent, @vermeld bestanden, gebruik /commando's"
@@ -2465,6 +2475,12 @@ msgstr "Vraag om wijzigingen"
 
 msgid "Ask to make changes, @mention files, run /commands"
 msgstr "Vraag om wijzigingen, @vermeld bestanden, voer /commands uit"
+
+msgid "Asks before edits and commands"
+msgstr "Vraagt voor bewerkingen en opdrachten"
+
+msgid "Asks only for risky actions"
+msgstr "Vraagt alleen bij riskante acties"
 
 msgid "Aspect Ratio"
 msgstr "Aspect Ratio"
@@ -2770,14 +2786,20 @@ msgstr "Terug naar de ranglijst"
 msgid "Background"
 msgstr "Achtergrond"
 
+msgid "Background processes"
+msgstr "Achtergrondprocessen"
+
 msgid "Background processes in chat"
 msgstr "Achtergrondprocessen in chat"
+
+msgid "Background task"
+msgstr "Achtergrondtaak"
 
 msgid "Background terminal memory"
 msgstr "Geheugen voor terminals op de achtergrond"
 
-msgid "Background terminal sessions"
-msgstr "Terminalsessies op de achtergrond"
+msgid "Background work and pages"
+msgstr "Achtergrondwerk en pagina's"
 
 msgid "Backlog"
 msgstr "Backlog"
@@ -3807,9 +3829,6 @@ msgstr "Terminal sluiten"
 
 msgid "Close Terminal"
 msgstr "Terminal sluiten"
-
-msgid "Close terminal session"
-msgstr "Terminalsessie sluiten"
 
 msgid "Close the current pane"
 msgstr "Het huidige paneel sluiten"
@@ -4883,6 +4902,9 @@ msgstr "Kan automatiseringen niet laden"
 msgid "Couldn't load contributors — type a username instead."
 msgstr "Kan contributors niet laden — typ in plaats daarvan een gebruikersnaam."
 
+msgid "Couldn't load earlier messages. Retry"
+msgstr "Eerdere berichten konden niet worden geladen. Opnieuw proberen"
+
 msgid "Couldn't load issues: {msg}"
 msgstr "Kan issues niet laden: {msg}"
 
@@ -4958,6 +4980,9 @@ msgstr "Kan de werkruimte niet herstarten: {0}"
 msgid "Couldn't restore \"{projectName}\""
 msgstr "Kan \"{projectName}\" niet herstellen"
 
+msgid "Couldn't restore \"{workspaceName}\""
+msgstr "Kan \"{workspaceName}\" niet herstellen"
+
 msgid "Couldn't save"
 msgstr "Kan niet opslaan"
 
@@ -5008,6 +5033,9 @@ msgstr "Kan werkruimte niet starten"
 
 msgid "Couldn't stop the agent's terminal"
 msgstr "Kon de terminal van de agent niet stoppen"
+
+msgid "Couldn't stop the background task"
+msgstr "Kan de achtergrondtaak niet stoppen"
 
 msgid "Couldn't stop the chat"
 msgstr "Kon de chat niet stoppen"
@@ -6693,9 +6721,6 @@ msgstr "Wissen van terminalgeschiedenis mislukt"
 msgid "Failed to close port {0}"
 msgstr "Sluiten van poort {0} mislukt"
 
-msgid "Failed to close terminal session"
-msgstr "Sluiten van terminalsessie mislukt"
-
 msgid "Failed to connect to Google. Please try again."
 msgstr "Verbinden met Google mislukt. Probeer het opnieuw."
 
@@ -7137,6 +7162,9 @@ msgstr "FAQ"
 
 msgid "Fatal"
 msgstr "Fatal"
+
+msgid "Favorites"
+msgstr "Favorieten"
 
 msgid "Featured"
 msgstr "Uitgelicht"
@@ -9153,9 +9181,6 @@ msgstr "agentinstellingen laden"
 msgid "Load diff"
 msgstr "Diff laden"
 
-msgid "Load earlier messages"
-msgstr "Eerdere berichten laden"
-
 msgid "Load more"
 msgstr "Meer laden"
 
@@ -9239,9 +9264,6 @@ msgstr "Repository's laden..."
 
 msgid "Loading review..."
 msgstr "Review laden..."
-
-msgid "Loading sessions…"
-msgstr "Sessies laden…"
 
 msgid "Loading terminal scripts..."
 msgstr "Terminalscripts laden..."
@@ -9585,6 +9607,9 @@ msgstr "Merge-commit"
 msgid "Merge failed: {0}"
 msgstr "Mergen mislukt: {0}"
 
+msgid "Merge into center"
+msgstr "Samenvoegen in het midden"
+
 msgid "Merge merge request"
 msgstr "Mergeverzoek mergen"
 
@@ -9861,8 +9886,14 @@ msgstr "Het grootste deel van de softwaregeschiedenis"
 msgid "Move {count} to Group"
 msgstr "{count} naar groep verplaatsen"
 
+msgid "Move to Center"
+msgstr "Naar het midden verplaatsen"
+
 msgid "Move to group"
 msgstr "Naar groep verplaatsen"
+
+msgid "Move to Right Side"
+msgstr "Naar rechts verplaatsen"
 
 msgid "Move to Tab"
 msgstr "Verplaatsen naar tabblad"
@@ -10011,6 +10042,9 @@ msgstr "Netwerk gewijzigd"
 
 msgid "Never"
 msgstr "Nooit"
+
+msgid "Never asks before acting"
+msgstr "Vraagt nooit vooraf"
 
 msgctxt "badge on a page published since the menu was last opened"
 msgid "New"
@@ -10182,8 +10216,8 @@ msgstr "Volgende slide"
 msgid "Next Tab"
 msgstr "Volgend tabblad"
 
-msgid "Next Tab (Alt)"
-msgstr "Volgend tabblad (alt)"
+msgid "Next Tab (Second Shortcut)"
+msgstr "Volgend tabblad (tweede sneltoets)"
 
 msgid "Next Workspace"
 msgstr "Volgende werkruimte"
@@ -10270,9 +10304,6 @@ msgstr "Geen auteurs gevonden."
 
 msgid "No automations match"
 msgstr "Geen overeenkomende automatiseringen"
-
-msgid "No background terminal sessions"
-msgstr "Geen terminalsessies op de achtergrond"
 
 msgid "No branches found"
 msgstr "Geen branches gevonden"
@@ -10391,6 +10422,9 @@ msgstr "Geen uitgebreid nadenken"
 msgid "No failed runs."
 msgstr "Geen mislukte uitvoeringen."
 
+msgid "No favorite models"
+msgstr "Geen favoriete modellen"
+
 msgid "No files found"
 msgstr "Geen bestanden gevonden"
 
@@ -10477,6 +10511,9 @@ msgstr "Geen overeenkomsten"
 
 msgid "No matching files"
 msgstr "Geen overeenkomende bestanden"
+
+msgid "No matching models"
+msgstr "Geen overeenkomende modellen"
 
 msgid "No matching org members."
 msgstr "Geen overeenkomende leden in de organisatie."
@@ -10909,6 +10946,9 @@ msgstr "Niets hoeft opnieuw te worden geprobeerd"
 msgid "Nothing published in the last 30 days yet. Your rank appears once usage from this machine syncs, publishing as <0>{handle}</0>."
 msgstr "Nog niets gepubliceerd in de laatste 30 dagen. Je positie verschijnt zodra het gebruik van deze machine is gesynchroniseerd, gepubliceerd als <0>{handle}</0>."
 
+msgid "Nothing running"
+msgstr "Er draait niets"
+
 msgid "Nothing was missed"
 msgstr "Er is niets gemist"
 
@@ -11171,14 +11211,14 @@ msgstr "{path} openen in bestandspaneel"
 msgid "Open a multiline prompt composer for the active terminal"
 msgstr "Een prompt-editor met meerdere regels openen voor de actieve terminal"
 
+msgid "Open a pane, or drag one here from the center."
+msgstr "Open een paneel of sleep er een hierheen vanuit het midden."
+
 msgid "Open a pull request to view review status, checks, and comments."
 msgstr "Open een pull request om reviewstatus, checks en opmerkingen te zien."
 
 msgid "Open actions menu"
 msgstr "Actiemenu openen"
-
-msgid "Open an existing project folder"
-msgstr "Een bestaande projectmap openen"
 
 msgid "Open anyway"
 msgstr "Toch openen"
@@ -11282,9 +11322,6 @@ msgstr "Openen in elke IDE"
 
 msgid "Open in app"
 msgstr "Openen in de app"
-
-msgid "Open in App"
-msgstr "Openen in app"
 
 msgid "Open in browser"
 msgstr "Openen in browser"
@@ -11483,9 +11520,6 @@ msgstr "Open pull requests"
 msgid "Open recent"
 msgstr "Recent openen"
 
-msgid "Open Repo..."
-msgstr "Repo openen..."
-
 msgid "Open roles"
 msgstr "Openstaande vacatures"
 
@@ -11567,14 +11601,14 @@ msgstr "De werkruimte van de run openen"
 msgid "open the task in a workspace"
 msgstr "de taak in een werkruimte openen"
 
+msgid "Open the workspace in the app picked in the Open In menu (VS Code, Cursor, etc.)"
+msgstr "De werkruimte openen in de app die is gekozen in het menu 'Openen in' (VS Code, Cursor, enz.)"
+
 msgid "Open this run's workspace"
 msgstr "Werkruimte van deze run openen"
 
 msgid "Open workspace"
 msgstr "Werkruimte openen"
-
-msgid "Open workspace in external app (Cursor, VS Code, etc.)"
-msgstr "Werkruimte openen in een externe app (Cursor, VS Code, enz.)"
 
 msgid "OpenAI rejected this API key."
 msgstr "OpenAI heeft deze API-sleutel geweigerd."
@@ -12045,6 +12079,9 @@ msgstr "Kies een ander element"
 msgid "Pick a different element (esc)"
 msgstr "Kies een ander element (esc)"
 
+msgid "Pick a folder on disk and add it as a project"
+msgstr "Kies een map op schijf en voeg die toe als project"
+
 msgid "Pick a folder…"
 msgstr "Kies een map…"
 
@@ -12284,6 +12321,9 @@ msgstr "Voorkeuren"
 msgid "Prefix"
 msgstr "Prefix"
 
+msgid "Prefix of this team's task IDs. Changing it renames every task in the team."
+msgstr "Voorvoegsel van de taak-ID's van dit team. Als je het wijzigt, krijgen alle taken van het team een nieuwe naam."
+
 msgid "Preparing"
 msgstr "Voorbereiden"
 
@@ -12353,8 +12393,8 @@ msgstr "Vorige slide"
 msgid "Previous Tab"
 msgstr "Vorig tabblad"
 
-msgid "Previous Tab (Alt)"
-msgstr "Vorig tabblad (alt)"
+msgid "Previous Tab (Second Shortcut)"
+msgstr "Vorig tabblad (tweede sneltoets)"
 
 msgid "Previous Workspace"
 msgstr "Vorige werkruimte"
@@ -12769,12 +12809,6 @@ msgstr "Gelezen"
 msgid "Read and plan without changing anything"
 msgstr "Lezen en plannen zonder iets te wijzigen"
 
-msgid "Read files; ask for anything else"
-msgstr "Bestanden lezen; voor al het andere vragen"
-
-msgid "Read only"
-msgstr "Alleen lezen"
-
 msgid "Read the changelog"
 msgstr "Lees de changelog"
 
@@ -13034,6 +13068,9 @@ msgstr "{label} verwijderen?"
 
 msgid "Remove attachment"
 msgstr "Bijlage verwijderen"
+
+msgid "Remove from favorites"
+msgstr "Verwijderen uit favorieten"
 
 msgid "Remove from Queue"
 msgstr "Uit wachtrij halen"
@@ -13483,6 +13520,9 @@ msgstr "De werkruimte herstellen die je net hebt gearchiveerd"
 msgid "Restore this version?"
 msgstr "Deze versie herstellen?"
 
+msgid "Restore width"
+msgstr "Breedte herstellen"
+
 msgid "Restored"
 msgstr "Hersteld"
 
@@ -13491,6 +13531,12 @@ msgstr "\"{name}\" hersteld"
 
 msgid "Restored \"{projectName}\""
 msgstr "\"{projectName}\" hersteld"
+
+msgid "Restored \"{workspaceName}\""
+msgstr "\"{workspaceName}\" hersteld"
+
+msgid "Restoring \"{workspaceName}\"…"
+msgstr "\"{workspaceName}\" wordt hersteld…"
 
 msgid "Restoring your session"
 msgstr "Je sessie wordt hersteld"
@@ -14077,6 +14123,9 @@ msgstr "Linear doorzoeken"
 msgid "Search Linear…"
 msgstr "Linear doorzoeken…"
 
+msgid "Search models"
+msgstr "Modellen zoeken"
+
 msgid "Search pages"
 msgstr "Pagina's zoeken"
 
@@ -14304,9 +14353,6 @@ msgstr "Issue kiezen"
 
 msgid "Select method"
 msgstr "Kies methode"
-
-msgid "Select model"
-msgstr "Kies model"
 
 msgid "Select new project location"
 msgstr "Nieuwe projectlocatie kiezen"
@@ -15126,6 +15172,9 @@ msgstr "Uitgaven"
 msgid "Split"
 msgstr "Gesplitst"
 
+msgid "Split Along Longer Side"
+msgstr "Splitsen langs de langste zijde"
+
 msgid "Split button mirrors desktop's OpenInButton; picker trigger mirrors PickerTrigger"
 msgstr "Split-knop spiegelt OpenInButton van desktop; picker-trigger spiegelt PickerTrigger"
 
@@ -15146,9 +15195,6 @@ msgstr "Gesplitst paneel"
 
 msgid "Split Pane"
 msgstr "Gesplitst paneel"
-
-msgid "Split Pane Auto"
-msgstr "Paneel automatisch splitsen"
 
 msgid "Split Right"
 msgstr "Naar rechts splitsen"
@@ -15185,6 +15231,9 @@ msgstr "Splitsen met mobiele simulator"
 
 msgid "Split with New Browser"
 msgstr "Splitsen met nieuwe browser"
+
+msgid "Split with Sandbox Desktop"
+msgstr "Splitsen met sandbox-bureaublad"
 
 msgid "Squash & Merge"
 msgstr "Squashen en mergen"
@@ -15421,6 +15470,12 @@ msgstr "Stoppen"
 #. placeholder {0}: ringtone.name
 msgid "Stop {0}"
 msgstr "{0} stoppen"
+
+msgid "Stop {label}"
+msgstr "{label} stoppen"
+
+msgid "Stop all agent background processes"
+msgstr "Alle achtergrondprocessen van agents stoppen"
 
 msgid "Stop dictation"
 msgstr "Dicteren stoppen"
@@ -15923,6 +15978,9 @@ msgstr "Taak"
 
 msgid "Task ID copied"
 msgstr "Taak-ID gekopieerd"
+
+msgid "Task key"
+msgstr "Taaksleutel"
 
 msgid "Task Launch"
 msgstr "Start via taak"
@@ -16838,9 +16896,6 @@ msgstr "Dit haalt alle gestagede wijzigingen uit staging en draait ze terug. Ges
 msgid "This will unstage and revert all staged changes. Staged new files will be deleted. This cannot be undone."
 msgstr "Hiermee worden alle gestagede wijzigingen ge-unstaged en teruggedraaid. Gestagede nieuwe bestanden worden verwijderd. Dit kan niet ongedaan worden gemaakt."
 
-msgid "This workspace"
-msgstr "Deze werkruimte"
-
 msgid "This workspace has no project to branch from"
 msgstr "Deze workspace heeft geen project om vanaf af te splitsen"
 
@@ -16923,6 +16978,9 @@ msgid "Toggle plan"
 msgstr "Plan tonen/verbergen"
 
 msgid "Toggle right sidebar"
+msgstr "Rechterzijbalk tonen/verbergen"
+
+msgid "Toggle Right Sidebar"
 msgstr "Rechterzijbalk tonen/verbergen"
 
 msgid "Toggle Scripts Bar"
@@ -17394,9 +17452,6 @@ msgstr "Heropenen"
 
 msgid "Unresolved"
 msgstr "Onopgelost"
-
-msgid "Unrestricted access to the internet and any file on your computer"
-msgstr "Onbeperkte toegang tot internet en alle bestanden op je computer"
 
 msgid "Unsaved changes"
 msgstr "Niet-opgeslagen wijzigingen"
@@ -18216,6 +18271,9 @@ msgstr "Kiezer voor de accentkleur van een werkruimte"
 
 msgid "Workspace actions"
 msgstr "Werkruimte-acties"
+
+msgid "Workspace activity"
+msgstr "Werkruimte-activiteit"
 
 msgid "Workspace agents"
 msgstr "Werkruimte-agents"

@@ -426,6 +426,10 @@ msgstr "{0} terpasang"
 msgid "{0} is already assigned to \"{1}\"."
 msgstr "{0} sudah ditetapkan untuk \"{1}\"."
 
+#. placeholder {0}: params?.key
+msgid "{0} is already used for tasks in this organization."
+msgstr "{0} sudah digunakan untuk tugas di organisasi ini."
+
 #. placeholder {0}: params?.repoFullName
 msgid "{0} is not a repository the GitHub App is installed on"
 msgstr "{0} bukan repositori tempat GitHub App terpasang"
@@ -711,9 +715,6 @@ msgstr "{actor} melepas tautan workspace {workspace}"
 
 msgid "{actual} so far · ~{projected} projected"
 msgstr "{actual} sejauh ini · ~{projected} diperkirakan"
-
-msgid "{backgroundCount, plural, one {# background terminal session} other {# background terminal sessions}}"
-msgstr "{backgroundCount, plural, one {# sesi terminal latar belakang} other {# sesi terminal latar belakang}}"
 
 msgid "{behindCount, plural, one {Behind main by # commit, needs rebase} other {Behind main by # commits, needs rebase}}"
 msgstr "{behindCount, plural, one {Tertinggal # commit dari main, perlu rebase} other {Tertinggal # commit dari main, perlu rebase}}"
@@ -1036,6 +1037,9 @@ msgstr "{previewSize}px · tinggi baris {0}"
 
 msgid "{provider} logo"
 msgstr "Logo {provider}"
+
+msgid "{queued, plural, one {# message waiting in the queue} other {# messages waiting in the queue}}"
+msgstr "{queued, plural, one {# pesan menunggu dalam antrean} other {# pesan menunggu dalam antrean}}"
 
 msgid "{readPercent}% read"
 msgstr "{readPercent}% dibaca"
@@ -1465,6 +1469,9 @@ msgstr "Profil terpisah yang ditagih per token. Kunci tetap berada di CLI {0}."
 msgid "A separate profile that shares your skills, plugins, MCP servers, and settings."
 msgstr "Profil terpisah yang berbagi skill, plugin, server MCP, dan pengaturan Anda."
 
+msgid "A task key is 1 to 5 letters or numbers and starts with a letter."
+msgstr "Kunci tugas terdiri dari 1 hingga 5 huruf atau angka dan diawali huruf."
+
 msgid "a teammate"
 msgstr "rekan tim"
 
@@ -1703,6 +1710,12 @@ msgstr "Tambah foto atau file"
 msgid "Add project"
 msgstr "Tambah proyek"
 
+msgid "Add Project from Folder"
+msgstr "Tambah Proyek dari Folder"
+
+msgid "Add Project from Folder..."
+msgstr "Tambah Proyek dari Folder..."
+
 msgid "Add prompt e.g. look for crashes in $sentry"
 msgstr "Tambahkan prompt, mis. cari crash di $sentry"
 
@@ -1738,6 +1751,9 @@ msgstr "Tambahkan label ini"
 
 msgid "Add to Dictionary"
 msgstr "Tambahkan ke Kamus"
+
+msgid "Add to favorites"
+msgstr "Tambahkan ke favorit"
 
 msgid "Add to project"
 msgstr "Tambahkan ke proyek"
@@ -1997,6 +2013,9 @@ msgstr "Semua di tab saat ini"
 msgid "All in current tab (split panes)"
 msgstr "Semua di tab saat ini (panel terbagi)"
 
+msgid "All models"
+msgstr "Semua model"
+
 msgid "All objectives cleared. Top rung, nothing left to reach for."
 msgstr "Semua sasaran tercapai. Anak tangga teratas, tidak ada lagi yang bisa dikejar."
 
@@ -2014,9 +2033,6 @@ msgstr "Semua data Anda akan dihapus permanen setelah {ACCOUNT_DELETION_GRACE_DA
 
 msgid "All open terminal sessions will be killed and any running host-services will be stopped. Use “Close Superset” instead if you want services to keep running for the next launch."
 msgstr "Semua sesi terminal yang terbuka akan dimatikan dan host-service yang berjalan akan dihentikan. Pakai “Close Superset” kalau Anda ingin layanannya tetap berjalan untuk peluncuran berikutnya."
-
-msgid "All pages"
-msgstr "Semua halaman"
 
 msgid "All plans"
 msgstr "Semua paket"
@@ -2436,17 +2452,11 @@ msgstr "menaik"
 msgid "Ask an agent to publish one from the desktop app."
 msgstr "Minta agen untuk memublikasikan satu dari aplikasi desktop."
 
-msgid "Ask before editing files or running commands"
-msgstr "Tanya sebelum mengedit file atau menjalankan perintah"
-
 msgid "Ask for approval"
 msgstr "Minta persetujuan"
 
 msgid "Ask for this to be removed"
 msgstr "Minta ini dihapus"
-
-msgid "Ask only for actions that look risky"
-msgstr "Tanya hanya untuk tindakan yang tampak berisiko"
 
 msgid "Ask the agent, @mention files, run /commands"
 msgstr "Tanya agen, @sebut berkas, jalankan /perintah"
@@ -2465,6 +2475,12 @@ msgstr "Minta perubahan"
 
 msgid "Ask to make changes, @mention files, run /commands"
 msgstr "Minta perubahan, @mention file, jalankan /command"
+
+msgid "Asks before edits and commands"
+msgstr "Bertanya sebelum edit dan perintah"
+
+msgid "Asks only for risky actions"
+msgstr "Hanya bertanya untuk tindakan berisiko"
 
 msgid "Aspect Ratio"
 msgstr "Aspect Ratio"
@@ -2770,14 +2786,20 @@ msgstr "Kembali ke papan peringkat"
 msgid "Background"
 msgstr "Latar belakang"
 
+msgid "Background processes"
+msgstr "Proses latar belakang"
+
 msgid "Background processes in chat"
 msgstr "Proses latar belakang di chat"
+
+msgid "Background task"
+msgstr "Tugas latar belakang"
 
 msgid "Background terminal memory"
 msgstr "Memori terminal latar belakang"
 
-msgid "Background terminal sessions"
-msgstr "Sesi terminal latar belakang"
+msgid "Background work and pages"
+msgstr "Pekerjaan latar belakang dan halaman"
 
 msgid "Backlog"
 msgstr "Backlog"
@@ -3807,9 +3829,6 @@ msgstr "Tutup terminal"
 
 msgid "Close Terminal"
 msgstr "Tutup Terminal"
-
-msgid "Close terminal session"
-msgstr "Tutup sesi terminal"
 
 msgid "Close the current pane"
 msgstr "Tutup panel saat ini"
@@ -4883,6 +4902,9 @@ msgstr "Tidak bisa memuat otomatisasi"
 msgid "Couldn't load contributors — type a username instead."
 msgstr "Tidak bisa memuat kontributor — ketik username saja."
 
+msgid "Couldn't load earlier messages. Retry"
+msgstr "Tidak dapat memuat pesan sebelumnya. Coba lagi"
+
 msgid "Couldn't load issues: {msg}"
 msgstr "Tidak bisa memuat issue: {msg}"
 
@@ -4958,6 +4980,9 @@ msgstr "Tidak dapat memulai ulang workspace: {0}"
 msgid "Couldn't restore \"{projectName}\""
 msgstr "Tidak dapat memulihkan \"{projectName}\""
 
+msgid "Couldn't restore \"{workspaceName}\""
+msgstr "Tidak dapat memulihkan \"{workspaceName}\""
+
 msgid "Couldn't save"
 msgstr "Tidak bisa menyimpan"
 
@@ -5008,6 +5033,9 @@ msgstr "Tidak bisa memulai workspace"
 
 msgid "Couldn't stop the agent's terminal"
 msgstr "Tidak dapat menghentikan terminal agen"
+
+msgid "Couldn't stop the background task"
+msgstr "Tidak dapat menghentikan tugas latar belakang"
 
 msgid "Couldn't stop the chat"
 msgstr "Tidak dapat menghentikan obrolan"
@@ -6693,9 +6721,6 @@ msgstr "Gagal membersihkan riwayat terminal"
 msgid "Failed to close port {0}"
 msgstr "Gagal menutup port {0}"
 
-msgid "Failed to close terminal session"
-msgstr "Gagal menutup sesi terminal"
-
 msgid "Failed to connect to Google. Please try again."
 msgstr "Gagal terhubung ke Google. Silakan coba lagi."
 
@@ -7137,6 +7162,9 @@ msgstr "FAQ"
 
 msgid "Fatal"
 msgstr "Fatal"
+
+msgid "Favorites"
+msgstr "Favorit"
 
 msgid "Featured"
 msgstr "Unggulan"
@@ -9153,9 +9181,6 @@ msgstr "memuat pengaturan agen"
 msgid "Load diff"
 msgstr "Muat diff"
 
-msgid "Load earlier messages"
-msgstr "Muat pesan sebelumnya"
-
 msgid "Load more"
 msgstr "Muat lagi"
 
@@ -9239,9 +9264,6 @@ msgstr "Memuat repositori..."
 
 msgid "Loading review..."
 msgstr "Memuat review..."
-
-msgid "Loading sessions…"
-msgstr "Memuat sesi…"
 
 msgid "Loading terminal scripts..."
 msgstr "Memuat skrip terminal..."
@@ -9585,6 +9607,9 @@ msgstr "Merge Commit"
 msgid "Merge failed: {0}"
 msgstr "Merge gagal: {0}"
 
+msgid "Merge into center"
+msgstr "Gabungkan ke tengah"
+
 msgid "Merge merge request"
 msgstr "Merge merge request"
 
@@ -9861,8 +9886,14 @@ msgstr "Sebagian besar sejarah perangkat lunak"
 msgid "Move {count} to Group"
 msgstr "Pindahkan {count} ke Grup"
 
+msgid "Move to Center"
+msgstr "Pindahkan ke tengah"
+
 msgid "Move to group"
 msgstr "Pindahkan ke grup"
+
+msgid "Move to Right Side"
+msgstr "Pindahkan ke kanan"
 
 msgid "Move to Tab"
 msgstr "Pindahkan ke Tab"
@@ -10011,6 +10042,9 @@ msgstr "Jaringan Berubah"
 
 msgid "Never"
 msgstr "Tidak pernah"
+
+msgid "Never asks before acting"
+msgstr "Tidak pernah bertanya dulu"
 
 msgctxt "badge on a page published since the menu was last opened"
 msgid "New"
@@ -10182,8 +10216,8 @@ msgstr "Slide berikutnya"
 msgid "Next Tab"
 msgstr "Tab Berikutnya"
 
-msgid "Next Tab (Alt)"
-msgstr "Tab Berikutnya (Alt)"
+msgid "Next Tab (Second Shortcut)"
+msgstr "Tab Berikutnya (Pintasan Kedua)"
 
 msgid "Next Workspace"
 msgstr "Workspace Berikutnya"
@@ -10270,9 +10304,6 @@ msgstr "Tidak ada penulis ditemukan."
 
 msgid "No automations match"
 msgstr "Tidak ada otomatisasi yang cocok"
-
-msgid "No background terminal sessions"
-msgstr "Tidak ada sesi terminal latar belakang"
 
 msgid "No branches found"
 msgstr "Tidak ada branch ditemukan"
@@ -10391,6 +10422,9 @@ msgstr "Tanpa extended thinking"
 msgid "No failed runs."
 msgstr "Tidak ada eksekusi yang gagal."
 
+msgid "No favorite models"
+msgstr "Tidak ada model favorit"
+
 msgid "No files found"
 msgstr "File tidak ditemukan"
 
@@ -10477,6 +10511,9 @@ msgstr "Tidak ada yang cocok"
 
 msgid "No matching files"
 msgstr "Tidak ada berkas yang cocok"
+
+msgid "No matching models"
+msgstr "Tidak ada model yang cocok"
 
 msgid "No matching org members."
 msgstr "Tidak ada anggota organisasi yang cocok."
@@ -10909,6 +10946,9 @@ msgstr "Tidak ada yang perlu dicoba ulang"
 msgid "Nothing published in the last 30 days yet. Your rank appears once usage from this machine syncs, publishing as <0>{handle}</0>."
 msgstr "Belum ada yang dipublikasikan dalam 30 hari terakhir. Peringkat Anda muncul setelah penggunaan dari mesin ini tersinkron, dipublikasikan sebagai <0>{handle}</0>."
 
+msgid "Nothing running"
+msgstr "Tidak ada yang berjalan"
+
 msgid "Nothing was missed"
 msgstr "Tidak ada yang terlewat"
 
@@ -11171,14 +11211,14 @@ msgstr "Buka {path} di panel file"
 msgid "Open a multiline prompt composer for the active terminal"
 msgstr "Buka komposer prompt multibaris untuk terminal aktif"
 
+msgid "Open a pane, or drag one here from the center."
+msgstr "Buka panel, atau seret panel ke sini dari tengah."
+
 msgid "Open a pull request to view review status, checks, and comments."
 msgstr "Buka sebuah pull request untuk melihat status review, check, dan komentar."
 
 msgid "Open actions menu"
 msgstr "Buka menu aksi"
-
-msgid "Open an existing project folder"
-msgstr "Buka folder proyek yang sudah ada"
 
 msgid "Open anyway"
 msgstr "Tetap buka"
@@ -11282,9 +11322,6 @@ msgstr "Buka di IDE Mana Pun"
 
 msgid "Open in app"
 msgstr "Buka di aplikasi"
-
-msgid "Open in App"
-msgstr "Buka di Aplikasi"
 
 msgid "Open in browser"
 msgstr "Buka di browser"
@@ -11483,9 +11520,6 @@ msgstr "Pull request terbuka"
 msgid "Open recent"
 msgstr "Buka yang terbaru"
 
-msgid "Open Repo..."
-msgstr "Buka Repo..."
-
 msgid "Open roles"
 msgstr "Lowongan terbuka"
 
@@ -11567,14 +11601,14 @@ msgstr "Buka workspace run ini"
 msgid "open the task in a workspace"
 msgstr "membuka tugas di workspace"
 
+msgid "Open the workspace in the app picked in the Open In menu (VS Code, Cursor, etc.)"
+msgstr "Buka workspace di aplikasi yang dipilih di menu \"Buka di\" (VS Code, Cursor, dll.)"
+
 msgid "Open this run's workspace"
 msgstr "Buka workspace run ini"
 
 msgid "Open workspace"
 msgstr "Buka workspace"
-
-msgid "Open workspace in external app (Cursor, VS Code, etc.)"
-msgstr "Buka workspace di aplikasi luar (Cursor, VS Code, dll.)"
 
 msgid "OpenAI rejected this API key."
 msgstr "OpenAI menolak kunci API ini."
@@ -12045,6 +12079,9 @@ msgstr "Pilih elemen lain"
 msgid "Pick a different element (esc)"
 msgstr "Pilih elemen lain (esc)"
 
+msgid "Pick a folder on disk and add it as a project"
+msgstr "Pilih folder di disk dan tambahkan sebagai proyek"
+
 msgid "Pick a folder…"
 msgstr "Pilih folder…"
 
@@ -12284,6 +12321,9 @@ msgstr "Preferensi"
 msgid "Prefix"
 msgstr "Prefix"
 
+msgid "Prefix of this team's task IDs. Changing it renames every task in the team."
+msgstr "Awalan ID tugas tim ini. Mengubahnya akan mengganti nama semua tugas dalam tim."
+
 msgid "Preparing"
 msgstr "Menyiapkan"
 
@@ -12353,8 +12393,8 @@ msgstr "Slide sebelumnya"
 msgid "Previous Tab"
 msgstr "Tab Sebelumnya"
 
-msgid "Previous Tab (Alt)"
-msgstr "Tab Sebelumnya (Alt)"
+msgid "Previous Tab (Second Shortcut)"
+msgstr "Tab Sebelumnya (Pintasan Kedua)"
 
 msgid "Previous Workspace"
 msgstr "Workspace Sebelumnya"
@@ -12769,12 +12809,6 @@ msgstr "Dibaca"
 msgid "Read and plan without changing anything"
 msgstr "Baca dan rencanakan tanpa mengubah apa pun"
 
-msgid "Read files; ask for anything else"
-msgstr "Baca file; tanya untuk hal lainnya"
-
-msgid "Read only"
-msgstr "Hanya baca"
-
 msgid "Read the changelog"
 msgstr "Baca changelog"
 
@@ -13034,6 +13068,9 @@ msgstr "Hapus {label}?"
 
 msgid "Remove attachment"
 msgstr "Hapus lampiran"
+
+msgid "Remove from favorites"
+msgstr "Hapus dari favorit"
 
 msgid "Remove from Queue"
 msgstr "Keluarkan dari Antrean"
@@ -13483,6 +13520,9 @@ msgstr "Pulihkan ruang kerja yang baru saja Anda arsipkan"
 msgid "Restore this version?"
 msgstr "Pulihkan versi ini?"
 
+msgid "Restore width"
+msgstr "Pulihkan lebar"
+
 msgid "Restored"
 msgstr "Dipulihkan"
 
@@ -13491,6 +13531,12 @@ msgstr "\"{name}\" dipulihkan"
 
 msgid "Restored \"{projectName}\""
 msgstr "\"{projectName}\" dipulihkan"
+
+msgid "Restored \"{workspaceName}\""
+msgstr "\"{workspaceName}\" dipulihkan"
+
+msgid "Restoring \"{workspaceName}\"…"
+msgstr "Memulihkan \"{workspaceName}\"…"
 
 msgid "Restoring your session"
 msgstr "Memulihkan sesi Anda"
@@ -14077,6 +14123,9 @@ msgstr "Cari di Linear"
 msgid "Search Linear…"
 msgstr "Cari di Linear…"
 
+msgid "Search models"
+msgstr "Cari model"
+
 msgid "Search pages"
 msgstr "Cari halaman"
 
@@ -14304,9 +14353,6 @@ msgstr "Pilih issue"
 
 msgid "Select method"
 msgstr "Pilih metode"
-
-msgid "Select model"
-msgstr "Pilih model"
 
 msgid "Select new project location"
 msgstr "Pilih lokasi proyek yang baru"
@@ -15126,6 +15172,9 @@ msgstr "Pengeluaran"
 msgid "Split"
 msgstr "Bagi"
 
+msgid "Split Along Longer Side"
+msgstr "Bagi Sepanjang Sisi Terpanjang"
+
 msgid "Split button mirrors desktop's OpenInButton; picker trigger mirrors PickerTrigger"
 msgstr "Split button mencerminkan OpenInButton di desktop; pemicu picker mencerminkan PickerTrigger"
 
@@ -15146,9 +15195,6 @@ msgstr "Panel terbagi"
 
 msgid "Split Pane"
 msgstr "Panel Terpisah"
-
-msgid "Split Pane Auto"
-msgstr "Bagi Panel Otomatis"
 
 msgid "Split Right"
 msgstr "Bagi ke Kanan"
@@ -15185,6 +15231,9 @@ msgstr "Bagi dengan Simulator Seluler"
 
 msgid "Split with New Browser"
 msgstr "Bagi dengan Browser Baru"
+
+msgid "Split with Sandbox Desktop"
+msgstr "Bagi dengan Desktop Sandbox"
 
 msgid "Squash & Merge"
 msgstr "Squash & Merge"
@@ -15421,6 +15470,12 @@ msgstr "Hentikan"
 #. placeholder {0}: ringtone.name
 msgid "Stop {0}"
 msgstr "Hentikan {0}"
+
+msgid "Stop {label}"
+msgstr "Hentikan {label}"
+
+msgid "Stop all agent background processes"
+msgstr "Hentikan semua proses latar belakang agen"
 
 msgid "Stop dictation"
 msgstr "Hentikan dikte"
@@ -15923,6 +15978,9 @@ msgstr "Tugas"
 
 msgid "Task ID copied"
 msgstr "ID tugas disalin"
+
+msgid "Task key"
+msgstr "Kunci tugas"
 
 msgid "Task Launch"
 msgstr "Peluncuran Tugas"
@@ -16838,9 +16896,6 @@ msgstr "Ini akan mengeluarkan semua perubahan dari staging dan membatalkannya. F
 msgid "This will unstage and revert all staged changes. Staged new files will be deleted. This cannot be undone."
 msgstr "Ini akan meng-unstage dan mengembalikan semua perubahan yang di-stage. File baru yang di-stage akan dihapus. Ini tidak bisa dibatalkan."
 
-msgid "This workspace"
-msgstr "Workspace ini"
-
 msgid "This workspace has no project to branch from"
 msgstr "Ruang kerja ini tidak memiliki proyek untuk dicabangkan"
 
@@ -16924,6 +16979,9 @@ msgstr "Alihkan rencana"
 
 msgid "Toggle right sidebar"
 msgstr "Alihkan sidebar kanan"
+
+msgid "Toggle Right Sidebar"
+msgstr "Alihkan Sidebar Kanan"
 
 msgid "Toggle Scripts Bar"
 msgstr "Alihkan Bilah Skrip"
@@ -17394,9 +17452,6 @@ msgstr "Buka lagi"
 
 msgid "Unresolved"
 msgstr "Belum selesai"
-
-msgid "Unrestricted access to the internet and any file on your computer"
-msgstr "Akses tanpa batas ke internet dan semua file di komputer Anda"
 
 msgid "Unsaved changes"
 msgstr "Perubahan belum disimpan"
@@ -18216,6 +18271,9 @@ msgstr "Pemilih warna aksen workspace"
 
 msgid "Workspace actions"
 msgstr "Aksi workspace"
+
+msgid "Workspace activity"
+msgstr "Aktivitas workspace"
 
 msgid "Workspace agents"
 msgstr "Agen workspace"

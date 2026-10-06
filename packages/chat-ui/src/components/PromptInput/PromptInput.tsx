@@ -55,6 +55,7 @@ export function PromptInput({
 	onMentionHighlight,
 	onAttachmentClick,
 	onChipClick,
+	history,
 	className,
 }: PromptInputProps) {
 	const [initialConfig] = useState<InitialConfigType>(() => ({
@@ -92,6 +93,7 @@ export function PromptInput({
 					onMentionHighlight={onMentionHighlight}
 					onAttachmentClick={onAttachmentClick}
 					onChipClick={onChipClick}
+					history={history}
 				/>
 			</LexicalRoot>
 		</div>

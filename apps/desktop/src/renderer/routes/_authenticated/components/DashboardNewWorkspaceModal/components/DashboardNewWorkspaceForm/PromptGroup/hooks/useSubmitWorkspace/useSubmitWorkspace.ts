@@ -354,6 +354,12 @@ export function useSubmitWorkspace(
 			: undefined;
 
 		const trimmedPrompt = draft.prompt.trim();
+		const namingPrompt = openAsChat
+			? (finalPrompt ?? trimmedPrompt).trim().slice(0, 20_000) || undefined
+			: !wantAgent && trimmedPrompt
+				? trimmedPrompt
+				: undefined;
+		const namingAgent = openAsChat ? selectedAgent : undefined;
 		const workspaceId = crypto.randomUUID();
 		const snapshot = isSession
 			? {
@@ -361,7 +367,8 @@ export function useSubmitWorkspace(
 					projectId: null,
 					name: workspaceName ?? undefined,
 					agents,
-					namingPrompt: !wantAgent && trimmedPrompt ? trimmedPrompt : undefined,
+					namingPrompt,
+					namingAgent,
 				}
 			: isLocalCheckout
 				? {
@@ -371,8 +378,8 @@ export function useSubmitWorkspace(
 						name: workspaceName ?? undefined,
 						taskId: linkedTaskId,
 						agents,
-						namingPrompt:
-							!wantAgent && trimmedPrompt ? trimmedPrompt : undefined,
+						namingPrompt,
+						namingAgent,
 					}
 				: {
 						id: workspaceId,
@@ -392,10 +399,8 @@ export function useSubmitWorkspace(
 						baseBranch: draft.baseBranch ?? undefined,
 						taskId: linkedTaskId,
 						agents,
-						namingPrompt:
-							!isPrCheckout && !wantAgent && trimmedPrompt
-								? trimmedPrompt
-								: undefined,
+						namingPrompt: isPrCheckout ? undefined : namingPrompt,
+						namingAgent: isPrCheckout ? undefined : namingAgent,
 					};
 
 		if (trimmedPrompt) {

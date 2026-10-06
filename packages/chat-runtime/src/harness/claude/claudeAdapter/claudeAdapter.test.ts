@@ -136,6 +136,53 @@ describe("ClaudeAdapter", () => {
 });
 
 describe("ClaudeAdapter permission modes", () => {
+	test("starts in full access when no mode is requested", async () => {
+		let startMode: string | undefined;
+		const stream: ClaudeSession = {
+			async *[Symbol.asyncIterator]() {
+				await new Promise(() => undefined);
+			},
+		};
+		const query: ClaudeQuery = ({ options }) => {
+			startMode = options.permissionMode;
+			return stream;
+		};
+		const adapter = new ClaudeAdapter({ query });
+		const iterator = adapter
+			.start({ cwd: "/workspace" })
+			[Symbol.asyncIterator]();
+
+		const first = await iterator.next();
+		expect(first.value).toMatchObject({
+			kind: "session",
+			session: { modeId: "bypassPermissions" },
+		});
+		await Bun.sleep(0);
+		expect(startMode).toBe("bypassPermissions");
+	});
+
+	test("resumes without a requested mode in ask-for-approval, not full access", async () => {
+		let startMode: string | undefined;
+		const stream: ClaudeSession = {
+			async *[Symbol.asyncIterator]() {
+				await new Promise(() => undefined);
+			},
+		};
+		const query: ClaudeQuery = ({ options }) => {
+			startMode = options.permissionMode;
+			return stream;
+		};
+		const adapter = new ClaudeAdapter({ query });
+		const iterator = adapter
+			.start({ cwd: "/workspace", resume: { harnessSessionId: "s-1" } })
+			[Symbol.asyncIterator]();
+
+		const first = await iterator.next();
+		expect(first.value).toMatchObject({ session: { modeId: "default" } });
+		await Bun.sleep(0);
+		expect(startMode).toBe("default");
+	});
+
 	test("starts in the requested mode and switches the live session on setMode", async () => {
 		const modes: string[] = [];
 		let startMode: string | undefined;

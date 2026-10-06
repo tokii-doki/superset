@@ -17,13 +17,14 @@ import { MessageScroller } from "@superset/chat-ui/MessageScroller";
 import { ChatHistorySidebarScroller } from "@superset/ui/chat-history-sidebar";
 import { Spinner } from "@superset/ui/spinner";
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { OpenFile } from "../../../../../../types";
 import { ChatPaneActionsProvider } from "../../providers/ChatPaneActionsProvider";
 import type { ChatForkTarget } from "../../types";
 import { buildChatHandoffTranscript } from "../../utils/chatHandoffTranscript";
+import { promptHistory } from "../../utils/promptHistory";
 import { railMessages } from "../../utils/railMessages";
-import { Composer } from "../Composer";
+import { type AgentChoice, type AgentSwitcher, Composer } from "../Composer";
 import { SessionHeader } from "../SessionHeader";
 import { Transcript } from "../Transcript";
 import { useStableList } from "./hooks/useStableList";
@@ -32,12 +33,18 @@ const RESUME_FOLLOW_PX = 24;
 const NO_COMMANDS: AvailableCommand[] = [];
 const NO_CONFIG_OPTIONS: SessionConfigOption[] = [];
 
+const MODEL_OPTIONS_GRACE_MS = 1000;
+
 export function SessionView({
 	agentLabel,
+	agentSwitch,
 	canForkToWorktree,
 	client,
 	headerLeft,
+	isActive,
+	onModeChange,
 	pendingFirstPrompt,
+	preferredModelLabel,
 	onFirstPromptSent,
 	onFork,
 	onSessionState,
@@ -49,9 +56,14 @@ export function SessionView({
 	sessionId: string;
 	workspaceId: string;
 	headerLeft?: ReactNode;
+	isActive?: boolean;
 	pendingFirstPrompt: UserContent[] | null;
+	/** Selected by name once the agent lists its models, before the first prompt goes out. */
+	preferredModelLabel?: string;
 	onFirstPromptSent: () => void;
 	onSessionState?: (session: SessionState | null) => void;
+	/** The mode the user picked, so a resumed session can start in it again. */
+	onModeChange?: (modeId: string) => void;
 	/**
 	 * Absent when the agent cannot branch its own session. The transcript is
 	 * built here because only this view holds the timeline; a branch into
@@ -61,6 +73,17 @@ export function SessionView({
 	canForkToWorktree?: boolean;
 	/** Names the speaker in a handed-over transcript. */
 	agentLabel?: string;
+	/** The transcript goes with the switch: the next agent cannot load this session. */
+	agentSwitch?: {
+		currentPresetId: string;
+		agents: AgentChoice[];
+		onSwitch: (
+			presetId: string,
+			model: { id: string; label: string } | null,
+			transcript: string,
+			currentModeId: string | undefined,
+		) => void;
+	};
 	openFile?: OpenFile;
 }) {
 	const session = useChatSession({ client });
@@ -73,15 +96,52 @@ export function SessionView({
 			previous.preview === next.preview,
 	);
 	const approvals = useApprovals(session.snapshot);
+	const harness = session.snapshot.session?.harness;
+	const history = useStableList(
+		useMemo(() => promptHistory(timeline, harness), [timeline, harness]),
+	);
+
+	const configOptions = session.snapshot.session?.configOptions;
+	const agentStatus = session.snapshot.session?.status;
+	const [modelSettled, setModelSettled] = useState(
+		preferredModelLabel === undefined,
+	);
+	const modelRequested = useRef(false);
+	useEffect(() => {
+		if (modelSettled || session.status !== "ready") return;
+		if (configOptions === undefined) {
+			// An agent that reports no options never sends them.
+			if (agentStatus !== "idle") return;
+			const timer = setTimeout(
+				() => setModelSettled(true),
+				MODEL_OPTIONS_GRACE_MS,
+			);
+			return () => clearTimeout(timer);
+		}
+		if (modelRequested.current) return;
+		const option = configOptions.find((entry) => entry.category === "model");
+		const wanted = option?.options.find(
+			(entry) =>
+				entry.label.toLowerCase() === preferredModelLabel?.toLowerCase(),
+		);
+		if (!option || !wanted || wanted.id === option.currentValue) {
+			setModelSettled(true);
+			return;
+		}
+		modelRequested.current = true;
+		void session
+			.setConfigOption(option.id, wanted.id)
+			.finally(() => setModelSettled(true));
+	}, [agentStatus, configOptions, modelSettled, preferredModelLabel, session]);
 
 	const firstPromptSentRef = useRef(false);
 	useEffect(() => {
 		if (!pendingFirstPrompt || firstPromptSentRef.current) return;
-		if (session.status !== "ready") return;
+		if (session.status !== "ready" || !modelSettled) return;
 		firstPromptSentRef.current = true;
 		session.sendPrompt(pendingFirstPrompt);
 		onFirstPromptSent();
-	}, [pendingFirstPrompt, session, onFirstPromptSent]);
+	}, [pendingFirstPrompt, session, onFirstPromptSent, modelSettled]);
 
 	const sessionState = session.snapshot.session;
 	useEffect(() => {
@@ -119,6 +179,25 @@ export function SessionView({
 			),
 		[onFork, agentLabel],
 	);
+	const agentSwitcher = useMemo<AgentSwitcher | undefined>(
+		() =>
+			agentSwitch && {
+				currentPresetId: agentSwitch.currentPresetId,
+				agents: agentSwitch.agents,
+				onSwitch: (presetId, model) =>
+					agentSwitch.onSwitch(
+						presetId,
+						model,
+						buildChatHandoffTranscript(
+							timelineRef.current,
+							snapshotRef.current,
+							agentLabel ?? "Agent",
+						),
+						snapshotRef.current.session?.modeId,
+					),
+			},
+		[agentSwitch, agentLabel],
+	);
 	const {
 		cancelTurn,
 		loadOlder,
@@ -132,18 +211,24 @@ export function SessionView({
 			void respondToApproval(approvalId, decision),
 		[respondToApproval],
 	);
-	const onLoadOlder = useCallback(() => void loadOlder(), [loadOlder]);
 	const onSetConfigOption = useCallback(
 		(configId: string, value: string) => void setConfigOption(configId, value),
 		[setConfigOption],
 	);
 	const onSetMode = useCallback(
-		(modeId: string) => void setMode(modeId),
-		[setMode],
+		(modeId: string) => {
+			onModeChange?.(modeId);
+			void setMode(modeId);
+		},
+		[onModeChange, setMode],
 	);
 	const onSend = useCallback(
-		(content: UserContent[]) => sendPrompt(content),
-		[sendPrompt],
+		(content: UserContent[], { steer }: { steer: boolean }) =>
+			sendPrompt(
+				content,
+				steer && runningTurnId ? { expectedTurnId: runningTurnId } : undefined,
+			),
+		[sendPrompt, runningTurnId],
 	);
 	const onCancelTurn = useMemo(
 		() =>
@@ -174,13 +259,13 @@ export function SessionView({
 	// The stream is ready well before the agent is: the harness still has to
 	// spawn and, when resuming, replay the whole transcript. Showing an empty
 	// pane through that reads as a broken chat rather than a loading one.
-	const booting = sessionState?.status === "starting" && timeline.length === 0;
+	const booting = sessionState?.status === "starting";
 	const loadingTranscript = session.status === "loading" || booting;
 
 	// w-full because the pane lays its children out in a row: without it this
 	// sizes to its content and leaves the right of the pane empty.
 	return (
-		<ChatPaneActionsProvider openFile={openFile}>
+		<ChatPaneActionsProvider openFile={openFile} workspaceId={workspaceId}>
 			<div className="flex h-full min-h-0 w-full min-w-0 flex-col">
 				{/* Only worth a row when it carries a control: the pane header above
 				    already names the agent, and harness/status/connection repeated
@@ -216,7 +301,7 @@ export function SessionView({
 								hasOlder={session.hasOlder}
 								onDiscardPrompt={session.discardPrompt}
 								onFork={onFork ? forkWithTranscript : undefined}
-								onLoadOlder={onLoadOlder}
+								onLoadOlder={loadOlder}
 								onRespond={onRespond}
 								onRetryPrompt={session.retryPrompt}
 								outbox={session.outbox}
@@ -232,6 +317,7 @@ export function SessionView({
 					</MessageScroller.Provider>
 				)}
 				<Composer
+					agentSwitcher={agentSwitcher}
 					availableCommands={sessionState?.availableCommands ?? NO_COMMANDS}
 					configOptions={sessionState?.configOptions ?? NO_CONFIG_OPTIONS}
 					onSetConfigOption={onSetConfigOption}
@@ -240,6 +326,8 @@ export function SessionView({
 					onSetMode={onSetMode}
 					disabled={session.status !== "ready"}
 					draftKey={`chat-v3-draft:${sessionId}`}
+					history={history}
+					isActive={isActive}
 					onCancelTurn={onCancelTurn}
 					onSend={onSend}
 					promptQueue={promptQueue}

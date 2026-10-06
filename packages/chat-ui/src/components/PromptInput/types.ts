@@ -79,6 +79,7 @@ export type PromptInputSubmitPayload = {
 	text: string;
 	files: File[];
 	mentions: ComposerChip[];
+	steer: boolean;
 };
 
 export type PromptInputDictationError = {
@@ -127,5 +128,6 @@ export type PromptInputProps = {
 	onMentionHighlight?: (entry: ComposerMentionEntry | null) => void;
 	onAttachmentClick?: (attachment: PromptInputAttachment) => void;
 	onChipClick?: (chip: ComposerChip) => void;
+	history?: string[];
 	className?: string;
 };

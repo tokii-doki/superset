@@ -1,6 +1,7 @@
 import type { TurnGroup } from "@superset/chat/core";
 import type { AgentMessage, UserMessage } from "@superset/chat/protocol";
 import type { ChatHistorySidebarMessage } from "@superset/ui/chat-history-sidebar";
+import { parseAttachmentTags } from "../attachmentTags";
 import { userMessageText } from "../userMessageText";
 
 const PREVIEW_CHARS = 120;
@@ -24,7 +25,9 @@ export function railMessages(groups: TurnGroup[]): ChatHistorySidebarMessage[] {
 			if (entry.kind !== "item") continue;
 			const { item } = entry;
 			if (item.kind === "user_message") {
-				const line = preview(userMessageText(item as UserMessage));
+				const line = preview(
+					parseAttachmentTags(userMessageText(item as UserMessage)).text,
+				);
 				if (line) messages.push({ id: item.id, role: "user", preview: line });
 				continue;
 			}

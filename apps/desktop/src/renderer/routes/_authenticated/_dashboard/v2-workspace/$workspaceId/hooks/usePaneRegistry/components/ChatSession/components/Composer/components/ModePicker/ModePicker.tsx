@@ -3,20 +3,27 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from "@superset/ui/dropdown-menu";
 import { cn } from "@superset/ui/utils";
 import {
-	Eye,
+	FastForward,
 	FilePen,
-	Hand,
 	type LucideIcon,
 	NotebookPen,
-	ShieldAlert,
-	ShieldCheck,
+	Pause,
+	Play,
+	SlidersHorizontal,
 } from "lucide-react";
-import { LuCheck } from "react-icons/lu";
+import { useState } from "react";
+import { LuCheck, LuChevronDown } from "react-icons/lu";
+import { isUnrestrictedMode } from "../../../../utils/isUnrestrictedMode";
+import {
+	MENU_DESCRIPTION_CLASS,
+	MENU_ROW_CLASS,
+	PILL_CHEVRON_CLASS,
+	PILL_TRIGGER_CLASS,
+} from "../../constants";
 
 export type SessionMode = { id: string; label: string };
 
@@ -26,6 +33,10 @@ type ModeCopy = {
 	icon: LucideIcon;
 	unrestricted?: boolean;
 };
+
+const HIDDEN_MODE_IDS = new Set(["plan", "acceptEdits", "workspace-write"]);
+const SOLID_ICONS = new Set<LucideIcon>([Pause, Play, FastForward]);
+const UNRESTRICTED_TINT = "text-amber-500 opacity-65";
 
 export function ModePicker({
 	currentModeId,
@@ -37,15 +48,15 @@ export function ModePicker({
 	onSelect: (modeId: string) => void;
 }) {
 	const { t } = useLingui();
-	if (modes.length < 2) return null;
+	const [highlightedId, setHighlightedId] = useState<string>();
+	const offeredModes = modes.filter((mode) => !HIDDEN_MODE_IDS.has(mode.id));
+	if (offeredModes.length < 2) return null;
 
 	const knownModes: Record<string, ModeCopy> = {
 		default: {
 			title: t({ message: "Ask for approval" }),
-			description: t({
-				message: "Ask before editing files or running commands",
-			}),
-			icon: Hand,
+			description: t({ message: "Asks before edits and commands" }),
+			icon: Pause,
 		},
 		acceptEdits: {
 			title: t({ message: "Approve edits" }),
@@ -60,96 +71,119 @@ export function ModePicker({
 			icon: NotebookPen,
 		},
 		"read-only": {
-			title: t({ message: "Read only" }),
-			description: t({ message: "Read files; ask for anything else" }),
-			icon: Eye,
+			title: t({ message: "Ask for approval" }),
+			description: t({ message: "Asks before edits and commands" }),
+			icon: Pause,
 		},
 		auto: {
 			title: t({ message: "Approve for me" }),
-			description: t({ message: "Ask only for actions that look risky" }),
-			icon: ShieldCheck,
+			description: t({ message: "Asks only for risky actions" }),
+			icon: Play,
 		},
 		bypassPermissions: {
 			title: t({ message: "Full access" }),
-			description: t({
-				message:
-					"Unrestricted access to the internet and any file on your computer",
-			}),
-			icon: ShieldAlert,
-			unrestricted: true,
+			description: t({ message: "Never asks before acting" }),
+			icon: FastForward,
 		},
 		"full-access": {
 			title: t({ message: "Full access" }),
-			description: t({
-				message:
-					"Unrestricted access to the internet and any file on your computer",
-			}),
-			icon: ShieldAlert,
-			unrestricted: true,
+			description: t({ message: "Never asks before acting" }),
+			icon: FastForward,
+		},
+		"agent-full-access": {
+			title: t({ message: "Full access" }),
+			description: t({ message: "Never asks before acting" }),
+			icon: FastForward,
+		},
+		agent: {
+			title: t({ message: "Approve for me" }),
+			description: t({ message: "Asks only for risky actions" }),
+			icon: Play,
 		},
 	};
-	const copyFor = (mode: SessionMode): ModeCopy =>
-		knownModes[mode.id] ?? { title: mode.label, description: "", icon: Hand };
+	const copyFor = (mode: SessionMode): ModeCopy => ({
+		...(knownModes[mode.id] ?? {
+			title: mode.label,
+			description: "",
+			icon: SlidersHorizontal,
+		}),
+		unrestricted: isUnrestrictedMode(mode.id),
+	});
 
-	const current = modes.find((mode) => mode.id === currentModeId) ?? modes[0];
+	const current =
+		modes.find((mode) => mode.id === currentModeId) ?? offeredModes[0];
 	if (!current) return null;
 	const currentCopy = copyFor(current);
 	const CurrentIcon = currentCopy.icon;
 
+	const iconProps = (copy: ModeCopy) => ({
+		className: cn(
+			"size-3.5 shrink-0",
+			SOLID_ICONS.has(copy.icon) && "fill-current",
+			copy.unrestricted && UNRESTRICTED_TINT,
+		),
+		strokeWidth: SOLID_ICONS.has(copy.icon) ? 1 : 2,
+	});
+	const highlighted =
+		offeredModes.find((mode) => mode.id === highlightedId) ?? current;
+	const footer = copyFor(highlighted).description;
+
 	return (
-		<DropdownMenu>
+		<DropdownMenu
+			onOpenChange={(open) => {
+				if (!open) setHighlightedId(undefined);
+			}}
+		>
 			<DropdownMenuTrigger asChild>
 				<button
-					className={cn(
-						"flex h-8 cursor-pointer items-center gap-1.5 rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
-						currentCopy.unrestricted && "text-orange-600 dark:text-orange-400",
-					)}
+					className={cn(PILL_TRIGGER_CLASS, "group max-w-40")}
 					type="button"
 				>
-					<CurrentIcon className="size-4" />
-					<span>{currentCopy.title}</span>
+					<CurrentIcon {...iconProps(currentCopy)} />
+					<span className="truncate">{currentCopy.title}</span>
+					<LuChevronDown className={PILL_CHEVRON_CLASS} />
 				</button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="start" className="w-96" side="top">
-				<DropdownMenuLabel className="font-normal text-muted-foreground">
-					{t({ message: "How should the agent's actions be approved?" })}
-				</DropdownMenuLabel>
-				{modes.map((mode) => {
+			<DropdownMenuContent
+				align="start"
+				aria-label={t({
+					message: "How should the agent's actions be approved?",
+				})}
+				className="w-[210px] rounded-xl"
+				side="top"
+			>
+				{offeredModes.map((mode) => {
 					const copy = copyFor(mode);
 					const Icon = copy.icon;
 					return (
 						<DropdownMenuItem
-							className={cn(
-								"items-start gap-2",
-								copy.unrestricted && "text-orange-600 dark:text-orange-400",
-							)}
+							className={MENU_ROW_CLASS}
 							key={mode.id}
+							onFocus={() => setHighlightedId(mode.id)}
 							onSelect={() => {
 								if (mode.id !== currentModeId) onSelect(mode.id);
 							}}
 						>
-							<Icon className="mt-0.5 size-4 shrink-0" />
-							<div className="flex min-w-0 flex-1 flex-col">
-								<span>{copy.title}</span>
-								{copy.description ? (
-									<span
-										className={cn(
-											"text-xs",
-											copy.unrestricted
-												? "text-orange-600/80 dark:text-orange-400/80"
-												: "text-muted-foreground",
-										)}
-									>
-										{copy.description}
-									</span>
-								) : null}
-							</div>
+							<Icon {...iconProps(copy)} />
+							<span className="min-w-0 flex-1 truncate">{copy.title}</span>
 							{mode.id === current.id ? (
-								<LuCheck className="mt-0.5 size-4 shrink-0" />
+								<LuCheck className="size-3.5 shrink-0" />
 							) : null}
 						</DropdownMenuItem>
 					);
 				})}
+				{footer ? (
+					<div className="-mx-1 mt-1 -mb-1 border-t px-3 py-2">
+						<div
+							className={cn(
+								MENU_DESCRIPTION_CLASS,
+								"line-clamp-2 text-muted-foreground",
+							)}
+						>
+							{footer}
+						</div>
+					</div>
+				) : null}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
