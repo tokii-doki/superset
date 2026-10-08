@@ -202,7 +202,13 @@ export interface WorkspaceCreateTerminalLaunch {
 }
 
 export type WorkspaceCreateAgentLaunch =
-	| { ok: true; kind: "terminal"; sessionId: string; label: string }
+	| {
+			ok: true;
+			kind: "terminal";
+			sessionId: string;
+			label: string;
+			chatSessionId?: string;
+	  }
 	| { ok: false; error: string };
 
 /**

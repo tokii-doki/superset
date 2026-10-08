@@ -17,7 +17,6 @@ export type TasksSearch = {
 	instance?: string;
 	repoPath?: string;
 	projects?: string;
-	linearProject?: string;
 	state?: "open" | "all";
 };
 
@@ -35,7 +34,10 @@ export const Route = createFileRoute("/_authenticated/_dashboard/tasks")({
 		].includes(search.tab as string)
 			? (search.tab as TasksSearch["tab"])
 			: undefined,
-		assignee: typeof search.assignee === "string" ? search.assignee : undefined,
+		assignee:
+			typeof search.assignee === "string" && !search.assignee.startsWith("ext:")
+				? search.assignee
+				: undefined,
 		search: typeof search.search === "string" ? search.search : undefined,
 		type: ["tasks", "linear", "prs", "issues", "gitlab-issues"].includes(
 			search.type as string,
@@ -47,10 +49,6 @@ export const Route = createFileRoute("/_authenticated/_dashboard/tasks")({
 		instance: typeof search.instance === "string" ? search.instance : undefined,
 		repoPath: typeof search.repoPath === "string" ? search.repoPath : undefined,
 		projects: typeof search.projects === "string" ? search.projects : undefined,
-		linearProject:
-			typeof search.linearProject === "string"
-				? search.linearProject
-				: undefined,
 		state: ["open", "all"].includes(search.state as string)
 			? (search.state as TasksSearch["state"])
 			: undefined,

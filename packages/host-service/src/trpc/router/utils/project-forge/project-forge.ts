@@ -6,10 +6,12 @@ import { TRPCError } from "@trpc/server";
 import { resolveSourceControlProvider } from "../../../../source-control";
 import { assertGitLabIdentity } from "../../../../source-control/gitlab/merge-requests";
 import type {
+	CommentInput,
 	MergeInput,
 	RequestTarget,
 } from "../../../../source-control/types";
 import type { HostServiceContext } from "../../../../types";
+import { evictPullRequestContent } from "../../pull-requests/shared/pull-request-content-cache";
 import { syncPullRequestAfterWrite } from "../../pull-requests/shared/sync-after-write";
 import {
 	resolveGithubRepo,
@@ -75,6 +77,22 @@ export function createProjectForge(
 	});
 	return {
 		...adapter,
+		async addComment(input: CommentInput) {
+			const result = await adapter.addComment(input);
+			if (provider === "github") {
+				evictPullRequestContent(await adapter.getRepository(), input.prNumber);
+			}
+			return { ...result, ok: true };
+		},
+		async markReady(input: RequestTarget) {
+			const result = await adapter.markReady(input);
+			await syncPullRequestAfterWrite(ctx, {
+				repo: await adapter.getRepository(),
+				prNumber: input.prNumber,
+				action: "ready",
+			});
+			return result;
+		},
 		async setState(input: RequestTarget & { state: "open" | "closed" }) {
 			const result = await adapter.setState(input);
 			await syncPullRequestAfterWrite(ctx, {

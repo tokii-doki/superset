@@ -5,6 +5,7 @@ import { getHostServiceClientByUrl } from "renderer/lib/host-service-client";
 import { assertGitLabHostSupport } from "renderer/lib/host-service-gitlab";
 import { combinePullRequestReadErrors } from "../../../../utils/combinePullRequestReadErrors";
 import { fromHostPullRequestContent } from "../../../../utils/fromHostPullRequestContent";
+import type { PullRequestDetail } from "../../usePullRequestDetail";
 
 export async function fetchPullRequestDetail({
 	projectId,
@@ -24,7 +25,7 @@ export async function fetchPullRequestDetail({
 	provider?: "github" | "gitlab";
 	instance?: string;
 	repoPath?: string;
-}) {
+}): Promise<PullRequestDetail> {
 	if (provider === "gitlab") {
 		if (!projectId)
 			throw new Error(

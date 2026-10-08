@@ -87,12 +87,10 @@ function IssueDetailPage() {
 				search: search.search ?? "",
 				typeTab: provider === "gitlab" ? "gitlab-issues" : "issues",
 				projectFilters: resolveProjectFilterParams(search.projects, null, []),
-				linearProjectFilter: search.linearProject ?? null,
 				includeClosedIssues: search.state === "all",
 			}),
 		[
 			search.assignee,
-			search.linearProject,
 			search.search,
 			search.projects,
 			search.state,

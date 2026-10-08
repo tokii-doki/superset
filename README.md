@@ -250,7 +250,7 @@ No Neon account or third-party credentials are needed. `setup.local.sh` brings
 up a local Postgres 18 + neon-proxy + Redis stack via Docker and seeds a dev account.
 Sign in with the **"Sign in as dev"** button (or `admin@local.test` / `supersetdev`).
 
-Prereqs: [Bun](https://bun.sh/) v1.4.2+ (pinned in `.bun-version`), `docker`, `jq`, and [`gh`](https://cli.github.com/) (`brew install jq gh`).
+Prereqs for building from source (to use Superset, [install the app](#install) instead): [Bun](https://bun.sh/) v1.4.2+ (pinned in `.bun-version`), `docker`, `jq`, and [`gh`](https://cli.github.com/) (`brew install jq gh`).
 
 Start Docker before running setup. Setup must complete successfully before you
 start the development servers; fix any errors in its **Failed steps** summary

@@ -17,7 +17,8 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import simpleGit, { type SimpleGit } from "simple-git";
+import { type SimpleGit, simpleGit } from "simple-git";
+import { createUserSimpleGit } from "../../../../runtime/git/simple-git";
 import type { GitLabClient } from "../../../../source-control/gitlab/gitlab";
 import {
 	adoptLocalRepo,
@@ -495,7 +496,7 @@ describe("scaffolding commits bypass user git hooks", () => {
 	test("fixture sanity: the rejecting hooks abort a plain commit", async () => {
 		const repo = join(workRoot, "hooked");
 		mkdirSync(repo);
-		const git = simpleGit(repo);
+		const git = createUserSimpleGit(repo);
 		await git.init();
 
 		// simple-git's chain object is a thenable, not a Promise —
@@ -531,7 +532,7 @@ describe("scaffolding commits bypass user git hooks", () => {
 		// Seed the template fixture without the rejecting hooks in effect —
 		// only the code under test may exercise the bypass path.
 		process.env.GIT_CONFIG_GLOBAL = identityConfig;
-		const templateGit = simpleGit(template);
+		const templateGit = createUserSimpleGit(template);
 		await templateGit.init();
 		await templateGit.add(".");
 		await templateGit.raw(["commit", "-m", "seed"]);
@@ -579,7 +580,7 @@ describe("scaffolding commits bypass user commit signing", () => {
 	test("fixture sanity: the unusable signing key aborts a plain commit", async () => {
 		const repo = join(workRoot, "signed");
 		mkdirSync(repo);
-		const git = simpleGit(repo);
+		const git = createUserSimpleGit(repo);
 		await git.init();
 
 		// simple-git's chain object is a thenable, not a Promise —
@@ -617,7 +618,7 @@ describe("scaffolding commits bypass user commit signing", () => {
 		// Seed the template fixture without required signing in effect —
 		// only the code under test may exercise the bypass path.
 		process.env.GIT_CONFIG_GLOBAL = identityConfig;
-		const templateGit = simpleGit(template);
+		const templateGit = createUserSimpleGit(template);
 		await templateGit.init();
 		await templateGit.add(".");
 		await templateGit.raw(["commit", "-m", "seed"]);

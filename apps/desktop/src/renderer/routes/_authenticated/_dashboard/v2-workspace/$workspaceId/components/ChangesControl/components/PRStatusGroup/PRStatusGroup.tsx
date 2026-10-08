@@ -32,7 +32,7 @@ import { assertGitLabHostSupport } from "renderer/lib/host-service-gitlab";
 import { computeChecksRollup } from "renderer/routes/_authenticated/_dashboard/v2-workspace/$workspaceId/utils/computeChecksStatus";
 import { useWorkspace } from "renderer/routes/_authenticated/_dashboard/v2-workspace/providers/WorkspaceProvider";
 import { PRIcon, type PRState } from "renderer/screens/main/components/PRIcon";
-import type { PRFlowState } from "../../utils/getPRFlowState";
+import type { PRFlowState } from "../../../../utils/getPRFlowState";
 import { PRDetailCard } from "./components/PRDetailCard";
 import { PRStatusIndicators } from "./components/PRStatusIndicators";
 
@@ -51,6 +51,7 @@ interface PRStatusGroupProps {
 	onToggleChanges?: () => void;
 	/** Opens the PR's summary pane in the workspace (the menu's "Open pull request"). */
 	onOpenPullRequest: (ref: PullRequestRef) => void;
+	paneAreaStyle?: boolean;
 }
 
 /**
@@ -73,6 +74,7 @@ export function PRStatusGroup({
 	toggleLabel,
 	onToggleChanges,
 	onOpenPullRequest,
+	paneAreaStyle = false,
 }: PRStatusGroupProps) {
 	const { t } = useLingui();
 	const { workspace, hostUrl } = useWorkspace();
@@ -304,16 +306,21 @@ export function PRStatusGroup({
 		gitlabMergeMutation.isPending ||
 		gitlabMarkReadyMutation.isPending;
 
-	const tint = stateTintClasses(linkState);
+	const tint = paneAreaStyle ? NEUTRAL_TINT : stateTintClasses(linkState);
+	const menuItemClass = paneAreaStyle ? undefined : "text-xs";
+	const menuIconClass = paneAreaStyle ? "size-4" : "size-3.5";
 
 	const badgeContent = (
 		<>
-			<PRIcon state={linkState} className="size-4" />
+			<PRIcon
+				state={linkState}
+				className={paneAreaStyle ? "size-3.5" : "size-4"}
+			/>
 			{/* The number brightens while pressed — the state tint alone moves
 			    the fill too little to read as a toggle. */}
 			<span
 				className={cn(
-					"font-mono text-xs",
+					paneAreaStyle ? "text-xs tabular-nums" : "font-mono text-xs",
 					isChangesOpen ? "text-foreground" : "text-muted-foreground",
 				)}
 			>
@@ -324,7 +331,8 @@ export function PRStatusGroup({
 		</>
 	);
 	const badgeClass = cn(
-		"flex h-full items-center gap-1 px-1.5 outline-none transition-colors",
+		"flex h-full items-center outline-none transition-colors",
+		paneAreaStyle ? "gap-1.5 px-2" : "gap-1 px-1.5",
 		tint.hover,
 		isChangesOpen && tint.pressed,
 	);
@@ -383,7 +391,8 @@ export function PRStatusGroup({
 					<button
 						type="button"
 						className={cn(
-							"flex h-full items-center px-1 outline-none transition-colors",
+							"flex h-full items-center outline-none transition-colors",
+							paneAreaStyle ? "w-7 justify-center" : "px-1",
 							tint.hover,
 						)}
 						disabled={isPending}
@@ -404,11 +413,14 @@ export function PRStatusGroup({
 						)}
 					</button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end" className="w-44">
+				<DropdownMenuContent
+					align="end"
+					className={paneAreaStyle ? "w-56" : "w-44"}
+				>
 					{canMarkReady && (
 						<>
 							<DropdownMenuItem
-								className="text-xs"
+								className={menuItemClass}
 								disabled={isPending}
 								onClick={() => {
 									if (isGitLab) {
@@ -429,7 +441,7 @@ export function PRStatusGroup({
 									}
 								}}
 							>
-								<VscGitPullRequest className="size-3.5" />
+								<VscGitPullRequest className={menuIconClass} />
 								<Trans>Ready for review</Trans>
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
@@ -437,7 +449,12 @@ export function PRStatusGroup({
 					)}
 					{canMerge && (
 						<>
-							<DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+							<DropdownMenuLabel
+								className={cn(
+									"font-normal text-muted-foreground",
+									menuItemClass,
+								)}
+							>
 								<Trans>Merge</Trans>
 							</DropdownMenuLabel>
 							{(!isGitLab ||
@@ -446,10 +463,10 @@ export function PRStatusGroup({
 								)) && (
 								<DropdownMenuItem
 									onClick={() => handleMerge("squash")}
-									className="text-xs"
+									className={menuItemClass}
 									disabled={isPending}
 								>
-									<VscGitMerge className="size-3.5" />
+									<VscGitMerge className={menuIconClass} />
 									<Trans>Squash and merge</Trans>
 								</DropdownMenuItem>
 							)}
@@ -457,20 +474,20 @@ export function PRStatusGroup({
 								gitlabContent?.capabilities.mergeMethods.includes("merge")) && (
 								<DropdownMenuItem
 									onClick={() => handleMerge("merge")}
-									className="text-xs"
+									className={menuItemClass}
 									disabled={isPending}
 								>
-									<VscGitMerge className="size-3.5" />
+									<VscGitMerge className={menuIconClass} />
 									<Trans>Create merge commit</Trans>
 								</DropdownMenuItem>
 							)}
 							{!isGitLab && (
 								<DropdownMenuItem
 									onClick={() => handleMerge("rebase")}
-									className="text-xs"
+									className={menuItemClass}
 									disabled={isPending}
 								>
-									<VscGitMerge className="size-3.5" />
+									<VscGitMerge className={menuIconClass} />
 									<Trans>Rebase and merge</Trans>
 								</DropdownMenuItem>
 							)}
@@ -479,14 +496,14 @@ export function PRStatusGroup({
 					)}
 					{!isSession && (
 						<DropdownMenuItem
-							className="text-xs"
+							className={menuItemClass}
 							onClick={() => {
 								const ref = pullRequestRefFromUrl(pr.url);
 								if (ref) onOpenPullRequest(ref);
 								else window.open(pr.url, "_blank");
 							}}
 						>
-							<VscGitPullRequest className="size-3.5" />
+							<VscGitPullRequest className={menuIconClass} />
 							{isGitLab ? (
 								<Trans>Open merge request</Trans>
 							) : (
@@ -494,9 +511,9 @@ export function PRStatusGroup({
 							)}
 						</DropdownMenuItem>
 					)}
-					<DropdownMenuItem asChild className="text-xs">
+					<DropdownMenuItem asChild className={menuItemClass}>
 						<a href={pr.url} target="_blank" rel="noopener noreferrer">
-							<LuArrowUpRight className="size-3.5" />
+							<LuArrowUpRight className={menuIconClass} />
 							{isGitLab ? (
 								<Trans>Open in GitLab</Trans>
 							) : (
@@ -509,6 +526,13 @@ export function PRStatusGroup({
 		</div>
 	);
 }
+
+const NEUTRAL_TINT = {
+	container: "",
+	hover: "hover:bg-accent/60 focus-visible:bg-accent/60",
+	pressed: "bg-accent/60",
+	divider: "bg-border/60",
+};
 
 /**
  * State-tinted styling for the PR badge segment. Mirrors the PRIcon color

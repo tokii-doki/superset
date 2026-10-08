@@ -11,6 +11,7 @@ import { getThreads } from "./procedures/get-threads";
 import { markReady } from "./procedures/mark-ready";
 import { mergePR } from "./procedures/merge";
 import { replyToThread } from "./procedures/reply-to-thread";
+import { setDraft } from "./procedures/set-draft";
 import { setState } from "./procedures/set-state";
 import { setThreadResolution } from "./procedures/set-thread-resolution";
 
@@ -93,6 +94,7 @@ export const pullRequestsRouter = router({
 			);
 			return { ok: true };
 		}),
+	addComment,
 	createForWorkspace,
 	getContent,
 	getContentByRepo,
@@ -100,10 +102,10 @@ export const pullRequestsRouter = router({
 	getDiffByRepo,
 	getLinkedWorkspace,
 	getThreads,
+	setDraft,
 	setState,
 	setThreadResolution,
 	replyToThread,
 	mergePR,
 	markReady,
-	addComment,
 });
